@@ -16,8 +16,7 @@ class CreateJamKetersediaanTable extends Migration
         Schema::create('jam_ketersediaan', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('penyedia_jasa_mua_id')->nullable();
-            $table->time('jam_mulai');
-            $table->time('jam_selesai');
+            $table->string('hari');
             $table->timestamps();
 
             // Foreign keys

@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('username');
             $table->string('email')->unique();
             $table->string('password'); // Hashed
+            $table->string('token')->nullable();
             $table->unsignedBigInteger('role_id')->nullable();
             $table->timestamps();
             $table->unsignedBigInteger('created_by')->nullable();

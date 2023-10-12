@@ -16,8 +16,14 @@ class CreatePenyediaJasaMuaTable extends Migration
         Schema::create('penyedia_jasa_mua', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('alamat')->nullable();
             $table->string('nomor_telepon')->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('nama_jasa_mua')->nullable();
+            $table->string('deskripsi_jasa_mua')->nullable();
+            $table->string('lokasi_jasa_mua')->nullable();
+            $table->integer('kapasitas_pelanggan_per_hari')->nullable();
+            $table->integer('status')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
             $table->unsignedBigInteger('created_by')->nullable();
