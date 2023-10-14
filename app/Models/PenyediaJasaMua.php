@@ -14,8 +14,14 @@ class PenyediaJasaMua extends Model
 
     protected $fillable = [
         'nama',
-        'alamat',
         'nomor_telepon',
+        'tanggal_lahir',
+        'gender',
+        'nama_jasa_mua',
+        'lokasi_jasa_mua',
+        'foto',
+        'kapasitas_pelanggan_per_hari',
+        'status',
         'user_id',
         'created_by',
         'updated_by',

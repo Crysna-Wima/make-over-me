@@ -10,12 +10,11 @@ class JamKetersediaan extends Model
 {
     use HasFactory;
 
-    protected $table = 'jam_ketersediaan';
+    protected $table = 'hari_ketersediaan';
 
     protected $fillable = [
         'penyedia_jasa_mua_id',
-        'jam_mulai',
-        'jam_selesai',
+        'hari',
     ];
 
     /**

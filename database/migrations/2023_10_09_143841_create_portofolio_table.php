@@ -16,8 +16,6 @@ class CreatePortofolioTable extends Migration
         Schema::create('portofolio', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('penyedia_jasa_mua_id')->nullable();
-            $table->string('judul');
-            $table->string('deskripsi');
             $table->string('gambar');
             $table->timestamps();
 
