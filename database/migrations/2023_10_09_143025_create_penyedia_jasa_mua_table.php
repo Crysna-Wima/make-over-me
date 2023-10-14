@@ -20,8 +20,8 @@ class CreatePenyediaJasaMuaTable extends Migration
             $table->date('tanggal_lahir')->nullable();
             $table->string('gender')->nullable();
             $table->string('nama_jasa_mua')->nullable();
-            $table->string('deskripsi_jasa_mua')->nullable();
             $table->string('lokasi_jasa_mua')->nullable();
+            $table->string('foto')->nullable();
             $table->integer('kapasitas_pelanggan_per_hari')->nullable();
             $table->integer('status')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();

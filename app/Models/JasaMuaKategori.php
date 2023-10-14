@@ -6,19 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class JamKetersediaan extends Model
+class JasaMuaKategori extends Model
 {
     use HasFactory;
 
-    protected $table = 'jam_ketersediaan';
+    protected $table = 'jasa_mua_kategori';
 
     protected $fillable = [
         'penyedia_jasa_mua_id',
-        'hari',
+        'kategori_layanan_id',
     ];
 
     /**
-     * Get the penyediaJasaMua that owns the JamKetersediaan
+     * Get the penyediaJasaMua that owns the JasaMuaKategori
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -26,4 +26,16 @@ class JamKetersediaan extends Model
     {
         return $this->belongsTo(PenyediaJasaMua::class, 'penyedia_jasa_mua_id', 'id');
     }
+
+    /**
+     * Get the kategoriLayanan that owns the JasaMuaKategori
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function kategoriLayanan(): BelongsTo
+    {
+        return $this->belongsTo(KategoriLayanan::class, 'kategori_layanan_id', 'id');
+    }
+
+
 }

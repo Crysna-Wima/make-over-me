@@ -13,7 +13,7 @@ class Layanan extends Model
 
     protected $fillable = [
         'penyedia_jasa_mua_id',
-        'kategori_layanan_id',
+        'jasa_mua_kategori_id',
         'nama',
         'harga',
         'deskripsi',
@@ -30,12 +30,13 @@ class Layanan extends Model
     }
 
     /**
-     * Get the kategoriLayanan that owns the Layanan
+     * Get the jasaMuaKategori that owns the Layanan
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function kategoriLayanan()
+    public function jasaMuaKategori()
     {
-        return $this->belongsTo(KategoriLayanan::class);
+        return $this->belongsTo(JasaMuaKategori::class);
     }
+    
 }
