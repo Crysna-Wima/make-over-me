@@ -11,12 +11,31 @@ use App\Models\JasaMuaKategori;
 use App\Models\PenyediaJasaMua;
 use App\Models\Portofolio;
 use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 
 
 class PenyediaJasaMuaController extends Controller
 {
-    public function register(PenyediaJasaMuaRequest $request)
+    public function register(Request $request)
     {
+        $validationRules = [
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8',
+            'nama' => 'required',
+            'nomor_telepon' => 'required',
+            'tanggal_lahir' => 'required',
+            'nama_jasa_mua' => 'required',
+            'lokasi_jasa_mua' => 'required',
+            'foto' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'kapasitas_pelanggan_per_hari' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'message' => $validator->errors()], 422);
+        }
+
         DB::beginTransaction();
     
         try {
@@ -43,12 +62,20 @@ class PenyediaJasaMuaController extends Controller
     
             // Create Portofolio
             $this->createPortofolio($penyediaJasaMua, $request);
+            $portofolio = Portofolio::where('penyedia_jasa_mua_id', $penyediaJasaMua)->get();
+            foreach ($portofolio as $portofolio){
+                $portofolio = url('/images/portofolio/'.$penyediaJasaMua->gambar);
+            }
     
             // Create Jasa Mua Kategori
             $this->createJasaMuaKategori($penyediaJasaMua, $request);
+            $jasaMuaKategori = JasaMuaKategori::join('kategori_layanan', 'jasa_mua_kategori.penyedia_jasa_mua_id', '=', 'kategori_layanan.id')->
+                    where('penyedia_jasa_mua_id', $penyediaJasaMua)->select('nama')->get();
+
     
             // Create Hari Ketersediaan
             $this->createHariKetersediaan($penyediaJasaMua, $request);
+            $hariKetersediaan = JamKetersediaan::where('penyedia_jasa_mua_id', $penyediaJasaMua)->select('hari')->get();
     
             DB::commit();
     
@@ -56,11 +83,11 @@ class PenyediaJasaMuaController extends Controller
                 'message' => 'Register Berhasil',
                 'data' => [
                     'user' => $user,
-                    'foto' => url($penyediaJasaMua->foto), // Image URL
+                    'foto' => url('/images/penyedia_jasa_mua/'.$penyediaJasaMua->foto), // Image URL
                     'penyedia_jasa_mua' => $penyediaJasaMua,
-                    'portofolio' => $penyediaJasaMua->portofolios,
-                    'jasa_mua_kategori' => $penyediaJasaMua->jasaMuaKategoris,
-                    'hari_ketersediaan' => $penyediaJasaMua->hariKetersediaans,
+                    'portofolio' => $portofolio,
+                    'jasa_mua_kategori' => $jasaMuaKategori,
+                    'hari_ketersediaan' => $hariKetersediaan,
                 ]
             ], 201);
         } catch (\Exception $e) {
