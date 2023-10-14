@@ -27,6 +27,15 @@ php artisan key:generate
 php artisan migrate --seed
 ```
 
+bagi sing wes kadung "composer install"
+
+```bash
+git pull origin main
+```
+
+```bash
+composer update
+```
 ### Copyright
 
 ...
