@@ -14,8 +14,7 @@ class Portofolio extends Model
 
     protected $fillable = [
         'penyedia_jasa_mua_id',
-        'foto',
-        'deskripsi',
+        'gambar',
     ];
 
     /**

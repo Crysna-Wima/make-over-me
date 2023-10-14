@@ -13,7 +13,7 @@ class PenyediaJasaMuaRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,15 @@ class PenyediaJasaMuaRequest extends FormRequest
     public function rules()
     {
         return [    
-            
+            'email' => 'required|email|unique:penyedia_jasa_mua,email',
+            'password' => 'required|min:8',
+            'nama' => 'required',
+            'nomor_telepon' => 'required',
+            'tanggal_lahir' => 'required',
+            'nama_jasa_mua' => 'required',
+            'lokasi_jasa_mua' => 'required',
+            'foto' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'kapasitas_pelanggan_per_hari' => 'required',
         ];
     }
 }
