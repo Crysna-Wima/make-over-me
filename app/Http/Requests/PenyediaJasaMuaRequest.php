@@ -24,7 +24,7 @@ class PenyediaJasaMuaRequest extends FormRequest
     public function rules()
     {
         return [    
-            'email' => 'required|email|unique:penyedia_jasa_mua,email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8',
             'nama' => 'required',
             'nomor_telepon' => 'required',
