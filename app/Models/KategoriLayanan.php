@@ -24,4 +24,14 @@ class KategoriLayanan extends Model
     {
         return $this->hasMany(Layanan::class);
     }
+
+    /**
+     * Get all of the jasaMuaKategori for the KategoriLayanan
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function jasaMuaKategori()
+    {
+        return $this->hasMany(JasaMuaKategori::class);
+    }
 }

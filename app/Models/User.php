@@ -46,9 +46,9 @@ class User extends Authenticatable
     /**
      * Get the role that owns the user.
      */
-    public function role()
+    public function hasRole(): HasOne
     {
-        return $this->belongsTo(Role::class);
+        return $this->hasOne(Role::class, 'id', 'role_id');
     }
 
     /**

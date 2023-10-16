@@ -27,13 +27,23 @@ class PenyediaJasaMua extends Model
         'updated_by',
     ];
 
-    /**
-     * Get the user that owns the PenyediaJasaMua
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class);
+    }
+
+    public function jasaMuaKategori(): BelongsTo
+    {
+        return $this->belongsTo(JasaMuaKategori::class);
+    }
+
+    public function jamKetersediaan(): BelongsTo
+    {
+        return $this->belongsTo(JamKetersediaan::class);
+    }
+
+    public function portofolio(): BelongsTo
+    {
+        return $this->belongsTo(Portofolio::class);
     }
 }
