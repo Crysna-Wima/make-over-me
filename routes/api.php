@@ -14,5 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Route get kecamatans
+Route::get('/kecamatans', 'API\KecamatanController@getKecamatans');
+//Route get kategori layanans
+Route::get('/kategori-layanans', 'API\KategoriLayananController@getKategoriLayanans');
 //Route register Penyedia Jasa MUA
 Route::post('/penyedia-jasa-mua/register', 'API\PenyediaJasaMuaController@register');
+//Route login
+Route::post('/login', 'API\AuthController@login');
+//Route get profile
+Route::middleware('auth:sanctum')->get('/profile', 'API\ProfileController@getProfile');
+//Route logout
+Route::middleware('auth:sanctum')->post('/logout', 'API\AuthController@logout');

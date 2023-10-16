@@ -22,6 +22,15 @@ class KategoriLayananSeeder extends Seeder
             [
                 'nama' => 'Make Up & Hair Do',
             ],
+            [
+                'nama' => 'Wedding Organizer',
+            ],
+            [
+                'nama' => 'Entertainment',
+            ],
+            [
+                'nama' => 'Lainnya',
+            ],
         ];
 
         foreach ($kategoriLayanan as $kategori) {
