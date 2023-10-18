@@ -18,8 +18,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/kecamatans', 'API\KecamatanController@getKecamatans');
 //Route get kategori layanans
 Route::get('/kategori-layanans', 'API\KategoriLayananController@getKategoriLayanans');
+// Route register user
+Route::post('/register', 'API\AuthController@register');
 //Route register Penyedia Jasa MUA
-Route::post('/penyedia-jasa-mua/register', 'API\PenyediaJasaMuaController@register');
+Route::middleware('auth:sanctum')->post('/penyedia-jasa-mua/register', 'API\PenyediaJasaMuaController@register');
 //Route login
 Route::post('/login', 'API\AuthController@login');
 //Route get profile

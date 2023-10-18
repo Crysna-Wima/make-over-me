@@ -20,9 +20,6 @@ class PenyediaJasaMuaController extends Controller
     {
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8',
-            'confirm_password' => 'required|same:password',
             'nama' => 'required',
             'nomor_telepon' => 'required',
             'tanggal_lahir' => 'required',
@@ -40,13 +37,13 @@ class PenyediaJasaMuaController extends Controller
         DB::beginTransaction();
     
         try {
-            // Create User
-            $user = User::create([
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
-                'role_id' => 3,
-            ]);
-    
+            $user = auth()->user();
+            
+            // check role_id "penyedia jasa mua"
+            if ($user->role_id != 3) {
+                return response()->json(['status' => false, 'message' => 'User tidak memiliki role penyedia jasa mua'], 422);
+            }
+
             // Create Penyedia Jasa Mua
             $penyediaJasaMua = PenyediaJasaMua::create([
                 'nama' => $request->nama,
@@ -77,7 +74,6 @@ class PenyediaJasaMuaController extends Controller
                 'message' => 'Registrasi Berhasil',
                 'data' => [
                     'user' => $user,
-                    'token' => $user->createToken('Personal Access Token')->plainTextToken,
                     'foto' => url('/images/penyedia_jasa_mua/'.$penyediaJasaMua->foto),
                     'penyedia_jasa_mua' => $penyediaJasaMua,
                     'portofolio' => $this->formatPortofolioUrls($portofolioFiles),
