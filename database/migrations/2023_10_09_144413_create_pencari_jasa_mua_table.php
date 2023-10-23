@@ -17,8 +17,11 @@ class CreatePencariJasaMuaTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('nama');
-            $table->string('alamat')->nullable();
             $table->string('nomor_telepon')->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('foto')->nullable();
+            $table->string('alamat')->nullable();
             $table->timestamps();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();

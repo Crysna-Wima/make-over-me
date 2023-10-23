@@ -10,22 +10,6 @@ class KecamatanSeeder extends Seeder
 {
     public function run()
     {
-        // [1,"Kecamatan Wonocolo","35.78.02",654.4464729262487,"ada","Pemkot Surabaya","Pemkot Surabaya","Desember 2020"],
-        // [2,"Kecamatan Rungkut","35.78.03",2294.278258383593,"ada","Pemkot Surabaya","Pemkot Surabaya","Desember 2020"],
-        // [3,"Kecamatan Wonokromo","35.78.04",827.6812081260327,"ada","Pemkot Surabaya","Pemkot Surabaya","Februari 2021"],
-        // [4,"Kecamatan Tegalsari","35.78.05",433.33749284669886,"ada","Pemkot Surabaya","Pemkot Surabaya","April 2020"],
-        // [6,"Kecamatan Genteng","35.78.07",409.193344862331,"ada","Pemkot Surabaya","Pemkot Surabaya","Desember 2020"],
-        // [7,"Kecamatan Gubeng","35.78.08",792.9092367374957,"ada","Pemkot Surabaya","Pemkot Surabaya","Desember 2020"],
-        // [8,"Kecamatan Sukolilo","35.78.09",3017.792536079271,"ada","Pemkot Surabaya","Pemkot Surabaya","Desember 2021"],
-        // [9,"Kecamatan Tambaksari","35.78.10",896.5725892876136,"ada","Pemkot Surabaya","Pemkot Surabaya","Desember 2020"],
-        // [10,"Kecamatan Simokerto","35.78.11",262.99644486694353,"ada","Pemkot Surabaya","Pemkot Surabaya","Desember 2020"],
-        // [12,"Kecamatan Bubutan","35.78.13",390.5992141362917,"ada","Pemkot Surabaya","Pemkot Surabaya","Juni 2020"],
-        // [18,"Kecamatan Benowo","35.78.19",2963.870924099401,"ada","Pemkot Surabaya","Pemkot Surabaya","November 2020"],
-        // [21,"Kecamatan Gayungan","35.78.22",591.2133121593065,"ada","Pemkot Surabaya","Pemkot Surabaya","Desember 2020"],
-        // [22,"Kecamatan Jambangan","35.78.23",411.911069171905,"ada","Pemkot Surabaya","Pemkot Surabaya","Desember 2020"],
-        // [24,"Kecamatan Tenggilis Mejoyo","35.78.24",580.853525960313,"ada","Pemkot Surabaya","Pemkot Surabaya","Agustus 2021"],
-        // [25,"Kecamatan Gunung Anyar","35.78.25",1015.2698576705931,"ada","Pemkot Surabaya","Pemkot Surabaya","Agustus 2021"],
-        // [30,"Kecamatan Pakal","35.78.30",1857.556744458374,"ada","Pemkot Surabaya","Pemkot Surabaya","Oktober 2021"]
         $data = [
             [
                 'nama_kecamatan' => 'Wonocolo',
@@ -172,6 +156,8 @@ class KecamatanSeeder extends Seeder
                 'tanggal_terakhir_dilakukan_pendataan_batas_wilayah' => 'Oktober 2021',
             ],
         ];
+
+        DB::table('kecamatan')->insert($data);
 
         $this->command->info('Berhasil menambahkan data kecamatan');
     }

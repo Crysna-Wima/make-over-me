@@ -15,8 +15,11 @@ class PencariJasaMua extends Model
     protected $fillable = [
         'user_id',
         'nama',
+        'tanggal_lahir',
+        'gender',
         'alamat',
         'nomor_telepon',
+        'foto',
         'created_by',
         'updated_by',
     ];

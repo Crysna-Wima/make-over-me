@@ -15,6 +15,7 @@ class Layanan extends Model
         'penyedia_jasa_mua_id',
         'jasa_mua_kategori_id',
         'nama',
+        'foto',
         'harga',
         'deskripsi',
     ];
