@@ -19,6 +19,7 @@ class CreateLayananTable extends Migration
             $table->unsignedBigInteger('jasa_mua_kategori_id')->nullable();
             $table->string('nama');
             $table->string('harga');
+            $table->string('foto');
             $table->string('deskripsi');
             $table->timestamps();
 

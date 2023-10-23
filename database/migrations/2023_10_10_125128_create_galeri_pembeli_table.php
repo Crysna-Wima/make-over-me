@@ -16,12 +16,14 @@ class CreateGaleriPembeliTable extends Migration
         Schema::create('galeri_pembeli', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('pencari_jasa_mua_id')->nullable();
+            $table->unsignedBigInteger('ulasan_id')->nullable();
             $table->string('foto');
             $table->string('deskripsi');
             $table->timestamps();
 
             // Foreign keys
             $table->foreign('pencari_jasa_mua_id')->references('id')->on('pencari_jasa_mua');
+            $table->foreign('ulasan_id')->references('id')->on('ulasan');
         });
     }
 
