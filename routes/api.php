@@ -35,15 +35,17 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     // Route register pencari jasa mua
     Route::post('/pencari-jasa-mua/register', 'API\Register\RegisterClientController@register');
+    // Route dashboard pencari jasa mua
+    Route::get('/pencari-jasa-mua/dashboard/{limit?}', 'API\Dashboard\DashboardClientController@index');
 });
 
+//route search mua
+Route::post('/search-mua', 'API\Dashboard\DashboardClientController@searchMua');
 
 //Route get kecamatans
 Route::get('/kecamatans', 'API\KecamatanController@getKecamatans');
 //Route get kategori layanans
 Route::get('/kategori-layanans', 'API\KategoriLayananController@getKategoriLayanans');
-// Route register Pencari Jasa MUA
-Route::middleware('auth:sanctum')->post('/pencari-jasa-mua/register', 'API\PencariJasaMuaController@register');
 //Route get profile
 Route::middleware('auth:sanctum')->get('/profile', 'API\ProfileController@getProfile');
 //Route create layanans

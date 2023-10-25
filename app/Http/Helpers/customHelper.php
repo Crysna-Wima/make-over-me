@@ -3,6 +3,7 @@
 use App\Models\JasaMuaKategori;
 use Illuminate\Support\Str;
 use App\Models\JamKetersediaan;
+use App\Models\Kecamatan;
 
 // parse Data
 if (!function_exists('parseData')) {
@@ -113,6 +114,14 @@ if (!function_exists('formatPortofolioUrls')) {
     }
 }
 
+// formatLayananUrl
+if (!function_exists('formatLayananUrl')) {
+    function formatLayananUrl($data)
+    {
+        return url('/file/' . $data->penyedia_jasa_mua_id . "_" . $data->nama . '/layanan/' . $data->foto);
+    }
+}
+
 // getJasaMuaKategoriName
 if (!function_exists('getJasaMuaKategoriName')) {
     function getJasaMuaKategoriName($penyediaJasaMua)
@@ -133,5 +142,14 @@ if (!function_exists('getHariKetersediaan')) {
             ->pluck('hari');
 
         return $hariKetersediaan;
+    }
+}
+
+// cari kecamatan terdekat
+if(!function_exists('getKecamatanTerdekat')){
+    function getKecamatanTerdekat($kecamatan) {
+        $kecamatanTerdekat = Kecamatan::where('nama_kecamatan', $kecamatan)->select('wilayah')->first();
+        $kecamatanTerdekat = Kecamatan::where('wilayah', $kecamatanTerdekat->wilayah)->select('nama_kecamatan')->get();
+        return $kecamatanTerdekat;
     }
 }

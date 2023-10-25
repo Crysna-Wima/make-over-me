@@ -30,7 +30,7 @@ class LayananController extends Controller
         $layanan = Layanan::create([
             'nama' => $request->nama,
             'harga' => $request->harga,
-            'foto' => $this->processAndSaveImage($request->foto, auth()->user()->id, auth()->user()->penyediaJasaMua->nama_jasa_mua),
+            'foto' => $this->processAndSaveImage($request->foto, auth()->user()->id, auth()->user()->penyediaJasaMua->nama),
             'deskripsi' => $request->deskripsi,
             'kategori_layanan_id' => $request->kategori_layanan_id,
             'penyedia_jasa_mua_id' => auth()->user()->penyediaJasaMua->id
