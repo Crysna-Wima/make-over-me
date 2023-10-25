@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama_kecamatan');
             $table->string('kode_kecamatan');
+            $table->string('wilayah');
             $table->decimal('luas_wilayah_kecamatan', 8, 2);
             $table->string('keberadaan_kantor_administrasi_pemerintahan');
             $table->string('status_kepemilikan_tanah_kantor_administrasi_pemerintahan');
