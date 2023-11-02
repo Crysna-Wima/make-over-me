@@ -20,16 +20,34 @@ class KategoriLayananSeeder extends Seeder
                 'nama' => 'Hair Do',
             ],
             [
-                'nama' => 'Make Up & Hair Do',
+                'nama' => 'Nail Art',
             ],
             [
-                'nama' => 'Wedding Organizer',
+                'nama' => 'Prewedding',
             ],
             [
-                'nama' => 'Entertainment',
+                'nama' => 'Wedding',
             ],
             [
-                'nama' => 'Lainnya',
+                'nama' => 'Engagement',
+            ],
+            [
+                'nama' => 'Graduation',
+            ],
+            [
+                'nama' => 'Party',
+            ],
+            [
+                'nama' => 'Photoshoot',
+            ],
+            [
+                'nama' => 'Event',
+            ],
+            [
+                'nama' => 'Daily',
+            ],
+            [
+                'nama' => 'Other',
             ],
         ];
 

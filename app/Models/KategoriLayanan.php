@@ -15,22 +15,8 @@ class KategoriLayanan extends Model
         'nama',
     ];
 
-    /**
-     * Get all of the layanan for the KategoriLayanan
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function layanan()
-    {
-        return $this->hasMany(Layanan::class);
-    }
-
-    /**
-     * Get all of the jasaMuaKategori for the KategoriLayanan
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function jasaMuaKategori()
+    // one to many relationship dengan jasa_mua_kategori
+    public function jasa_mua_kategori()
     {
         return $this->hasMany(JasaMuaKategori::class);
     }

@@ -25,22 +25,27 @@ Route::post('/penyedia-jasa-mua/accept', 'API\Register\RegisterMuaController@acc
 Route::middleware('auth:sanctum')->group(function () {
     // Route register penyedia jasa mua
     Route::post('/penyedia-jasa-mua/register', 'API\Register\RegisterMuaController@register');
-    //Route get profile penyedia jasa mua
-    Route::get('/penyedia-jasa-mua/dashboard/profile', 'API\DashboardMuaController@getProfileMua');
+    // Route dashboard penyedia jasa mua
+    Route::get('/penyedia-jasa-mua/dashboard/profile', 'API\Dashboard\DashboardMuaController@getProfileMua');
+    Route::get('/penyedia-jasa-mua/dashboard/layananmua', 'API\Dashboard\DashboardMuaController@getLayananMua');
+    Route::get('/penyedia-jasa-mua/dashboard/pesananterbaru', 'API\Dashboard\DashboardMuaController@getPemesanan');
+    Route::get('/penyedia-jasa-mua/dashboard/ulasan', 'API\Dashboard\DashboardMuaController@getUlasan');
 });
 
 
 
-// ==================== ROUTE GROUP FOR DASHBOARD PENYEDIA JASA MUA ====================
+// ==================== ROUTE GROUP FOR DASHBOARD PENCARI JASA MUA ====================
 Route::middleware('auth:sanctum')->group(function () {
     // Route register pencari jasa mua
     Route::post('/pencari-jasa-mua/register', 'API\Register\RegisterClientController@register');
     // Route dashboard pencari jasa mua
     Route::get('/pencari-jasa-mua/dashboard/{limit?}', 'API\Dashboard\DashboardClientController@index');
+    //route search mua
+    Route::post('/pencari-jasa-mua/search-mua', 'API\Dashboard\DashboardClientController@searchMua');
+    // route detail mua
+    Route::get('/pencari-jasa-mua/detail-mua/{id}', 'API\Dashboard\DetailJasaMuaController@index');
 });
 
-//route search mua
-Route::post('/search-mua', 'API\Dashboard\DashboardClientController@searchMua');
 
 //Route get kecamatans
 Route::get('/kecamatans', 'API\KecamatanController@getKecamatans');

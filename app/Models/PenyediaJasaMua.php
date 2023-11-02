@@ -27,23 +27,45 @@ class PenyediaJasaMua extends Model
         'updated_by',
     ];
 
-    public function user(): BelongsTo
+    // one to one relationship dengan user
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function jasaMuaKategori(): BelongsTo
+    // one to many relationship dengan banner
+    public function banner()
     {
-        return $this->belongsTo(JasaMuaKategori::class);
+        return $this->hasMany(Banner::class);
     }
 
-    public function jamKetersediaan(): BelongsTo
+    // one to many relationship dengan portofolio
+    public function portofolio()
     {
-        return $this->belongsTo(JamKetersediaan::class);
+        return $this->hasMany(Portofolio::class);
     }
 
-    public function portofolio(): BelongsTo
+    // one to many relationship dengan hari_ketersediaan
+    public function hari_ketersediaan()
     {
-        return $this->belongsTo(Portofolio::class);
+        return $this->hasMany(HariKetersediaan::class);
+    }
+
+    // many to one relationship dengan kecamatan
+    public function kecamatan()
+    {
+        return $this->belongsTo(Kecamatan::class, 'lokasi_jasa_mua', 'id');
+    }
+
+    // one to many relationship dengan jasa_mua_kategori
+    public function jasa_mua_kategori()
+    {
+        return $this->hasMany(JasaMuaKategori::class);
+    }
+
+    // one to many relationship dengan pemesanan
+    public function pemesanan()
+    {
+        return $this->hasMany(Pemesanan::class);
     }
 }

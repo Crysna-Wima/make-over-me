@@ -14,17 +14,13 @@ class Portofolio extends Model
 
     protected $fillable = [
         'penyedia_jasa_mua_id',
-        'gambar',
+        'file',
     ];
 
-    /**
-     * Get the penyediaJasaMua that owns the Portofolio
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function penyediaJasaMua(): BelongsTo
+    // many to one relationship dengan penyedia_jasa_mua
+    public function penyedia_jasa_mua()
     {
-        return $this->belongsTo(PenyediaJasaMua::class, 'penyedia_jasa_mua_id', 'id');
+        return $this->belongsTo(PenyediaJasaMua::class);
     }
 }
 

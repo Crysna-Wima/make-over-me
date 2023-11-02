@@ -16,7 +16,7 @@ class LayananController extends Controller
             'harga' => 'required',
             'foto' => 'required',
             'deskripsi' => 'required',
-            'kategori_layanan_id' => 'required',
+            'jasa_mua_kategori' => 'required',
         ]);
     
         if($validator->fails()) {
@@ -32,11 +32,11 @@ class LayananController extends Controller
             'harga' => $request->harga,
             'foto' => $this->processAndSaveImage($request->foto, auth()->user()->id, auth()->user()->penyediaJasaMua->nama),
             'deskripsi' => $request->deskripsi,
-            'kategori_layanan_id' => $request->kategori_layanan_id,
+            'jasa_mua_kategori_id' => $request->jasa_mua_kategori,
             'penyedia_jasa_mua_id' => auth()->user()->penyediaJasaMua->id
         ]);
     
-        $layanan->foto = url('file/' . auth()->user()->id . "_" . auth()->user()->penyediaJasaMua->nama_jasa_mua . '/layanan/' . $layanan->foto);
+        $layanan->foto = url('file/' . auth()->user()->id . "_" . auth()->user()->penyediaJasaMua->nama . '/layanan/' . $layanan->foto);
     
         return response()->json([
             'success' => true,

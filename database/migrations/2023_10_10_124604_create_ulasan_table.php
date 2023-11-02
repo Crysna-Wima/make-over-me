@@ -16,14 +16,12 @@ class CreateUlasanTable extends Migration
         Schema::create('ulasan', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('pemesanan_id')->nullable();
-            $table->unsignedBigInteger('penyedia_jasa_mua_id')->nullable();
             $table->string('rating');
             $table->string('komentar');
             $table->dateTime('tanggal');
 
             // Foreign keys
             $table->foreign('pemesanan_id')->references('id')->on('pemesanan');
-            $table->foreign('penyedia_jasa_mua_id')->references('id')->on('penyedia_jasa_mua');
         });
     }
 

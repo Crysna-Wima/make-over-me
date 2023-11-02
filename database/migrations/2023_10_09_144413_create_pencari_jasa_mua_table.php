@@ -21,13 +21,14 @@ class CreatePencariJasaMuaTable extends Migration
             $table->date('tanggal_lahir')->nullable();
             $table->string('gender')->nullable();
             $table->string('foto')->nullable();
-            $table->string('alamat')->nullable();
+            $table->unsignedBigInteger('alamat')->nullable();
             $table->timestamps();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
 
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('alamat')->references('id')->on('kecamatan');
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('updated_by')->references('id')->on('users');
         });

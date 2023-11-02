@@ -19,23 +19,9 @@ class Ulasan extends Model
         'tanggal',
     ];
 
-    /**
-     * Get the pemesanan that owns the Ulasan
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
+    // one to one relationship dengan pemesanan
     public function pemesanan()
     {
         return $this->belongsTo(Pemesanan::class);
-    }
-
-    /**
-     * Get the penyediaJasaMua that owns the Ulasan
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function penyediaJasaMua()
-    {
-        return $this->belongsTo(PenyediaJasaMua::class);
     }
 }
