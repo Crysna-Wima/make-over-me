@@ -12,7 +12,9 @@ class Role extends Model
     protected  $table = 'roles';
     protected $fillable = ['name'];
 
-    public function user()
+
+    // one to many relationship dengan user
+    public function users()
     {
         return $this->hasMany(User::class);
     }

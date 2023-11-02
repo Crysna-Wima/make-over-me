@@ -43,32 +43,22 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * Get the role that owns the user.
-     */
-    public function hasRole(): HasOne
+   // many to one relationship dengan role
+    public function role()
     {
-        return $this->hasOne(Role::class, 'id', 'role_id');
+         return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
-    /**
-     * Get the penyediaJasaMua associated with the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function penyediaJasaMua(): HasOne
+    public function penyedia_jasa_mua()
     {
         return $this->hasOne(PenyediaJasaMua::class, 'user_id', 'id');
     }
 
-    /**
-     * Get the pencariJasaMua associated with the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function pencariJasaMua(): HasOne
+    public function pencari_jasa_mua()
     {
         return $this->hasOne(PencariJasaMua::class, 'user_id', 'id');
     }
+
+
 
 }

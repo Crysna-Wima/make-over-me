@@ -16,7 +16,7 @@ class RegisterClientController extends Controller
             'nama' => 'required',
             'tanggal_lahir' => 'required',
             'jenis_kelamin' => 'required',
-            'alamat' => 'required',
+            'alamat' => 'required|exists:kecamatan,id',
             'nomor_telepon' => 'required',
             'foto' => 'required',
         ]);
@@ -30,8 +30,8 @@ class RegisterClientController extends Controller
         try {
             $user = auth()->user();
 
-            if ($user->role_id != 2) {
-                return response()->json(['status' => false, 'message' => 'User tidak memiliki role pencari jasa mua'], 422);
+            if ($user->role_id != 3) {
+                return response()->json(['status' => false, 'message' => 'User tidak memiliki role client'], 422);
             }
 
             $pencariJasaMua = PencariJasaMua::create([
@@ -40,7 +40,7 @@ class RegisterClientController extends Controller
                 'gender' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,
                 'nomor_telepon' => $request->nomor_telepon,
-                'foto' => uploadBase64Foto($request->foto, $user->id, $request->nama),
+                'foto' => $this->uploadBase64Foto($request->foto, $user->id, $request->nama),
                 'user_id' => $user->id
             ]);
 
@@ -68,9 +68,9 @@ class RegisterClientController extends Controller
             'nama' => $pencariJasaMua->nama,
             'tanggal_lahir' => $pencariJasaMua->tanggal_lahir,
             'jenis_kelamin' => $pencariJasaMua->gender,
-            'alamat' => $pencariJasaMua->alamat,
+            'alamat' => $pencariJasaMua->kecamatan->nama_kecamatan.', Surabaya',
             'nomor_telepon' => $pencariJasaMua->nomor_telepon,
-            'foto' => formatFotoUrl($pencariJasaMua),
+            'foto' => $this->formatFotoUrl($pencariJasaMua),
             'user_id' => $pencariJasaMua->user_id,
             'user' => $pencariJasaMua->user,
         ];

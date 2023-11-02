@@ -46,13 +46,13 @@ class ProfileController extends Controller
     
     
 
-    private function getHariKetersediaan($user)
-    {
-        $hariKetersediaan = JamKetersediaan::where('penyedia_jasa_mua_id', $user->penyedia_jasa_mua->id)
-            ->pluck('hari');
+    // private function getHariKetersediaan($user)
+    // {
+    //     $hariKetersediaan = JamKetersediaan::where('penyedia_jasa_mua_id', $user->penyedia_jasa_mua->id)
+    //         ->pluck('hari');
     
-        return $hariKetersediaan;
-    }
+    //     return $hariKetersediaan;
+    // }
 
     private function getPortofolio($user)
     {

@@ -18,4 +18,10 @@ class Banner extends Model
         'tanggal_mulai',
         'tanggal_selesai',
     ];
+
+    // many to one relationship dengan penyedia_jasa_mua
+    public function penyedia_jasa_mua()
+    {
+        return $this->belongsTo(PenyediaJasaMua::class);
+    }
 }

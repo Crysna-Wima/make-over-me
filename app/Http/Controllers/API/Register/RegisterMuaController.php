@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\PenyediaJasaMua;
 use App\Models\Portofolio;
 use App\Models\JasaMuaKategori;
-use App\Models\JamKetersediaan;
+use App\Models\HariKetersediaan;
 
 class RegisterMuaController extends Controller
 {
@@ -21,7 +21,7 @@ class RegisterMuaController extends Controller
             'tanggal_lahir' => 'required',
             'nama_jasa_mua' => 'required',
             'jenis_kelamin' => 'required',
-            'lokasi_jasa_mua' => 'required',
+            'lokasi_jasa_mua' => 'required|exists:kecamatan,id',
             'hari_ketersediaan' => 'required',
             'foto' => 'required',
             'portofolio.*' => 'required',
@@ -38,10 +38,10 @@ class RegisterMuaController extends Controller
             $user = auth()->user();
 
             // Parse data
-            $hari_ketersediaan = parseData($request->hari_ketersediaan);
-            $kategori_layanan = parseData($request->kategori_layanan);
+            $hari_ketersediaan = $this->parseData($request->hari_ketersediaan);
+            $kategori_layanan = $this->parseData($request->kategori_layanan);
 
-            if ($user->role_id != 3) {
+            if ($user->role_id != 2) {
                 return response()->json(['status' => false, 'message' => 'User tidak memiliki role penyedia jasa mua'], 422);
             }
 
@@ -53,12 +53,13 @@ class RegisterMuaController extends Controller
                 'nama_jasa_mua' => $request->nama_jasa_mua,
                 'lokasi_jasa_mua' => $request->lokasi_jasa_mua,
                 // make for base64 image
-                'foto' => uploadBase64Foto($request->foto, $user->id, $request->nama),
+                'foto' => $this->uploadBase64Foto($request->foto, $user->id, $request->nama),
                 'kapasitas_pelanggan_per_hari' => $request->kapasitas_pelanggan_per_hari,
-                'status' => 0,
+                'status' => 1,
                 'user_id' => $user->id,
             ]);
 
+            $penyediaJasaMua->lokasi_jasa_mua = $penyediaJasaMua->kecamatan->nama_kecamatan.', Surabaya';
             $portofolioFiles = $this->createPortofolio($penyediaJasaMua, $request);
             $this->createJasaMuaKategori($penyediaJasaMua, $kategori_layanan);
             $this->createHariKetersediaan($penyediaJasaMua, $hari_ketersediaan);
@@ -108,12 +109,12 @@ class RegisterMuaController extends Controller
         // Check if portofolio files are sent as base64 strings
         if ($request->has('portofolio')) {
             foreach ($request->portofolio as $base64Pdf) {
-                $filename = uploadBase64Portofolio($base64Pdf, $penyediaJasaMua->user_id, $penyediaJasaMua->nama);
+                $filename = $this->uploadBase64Portofolio($base64Pdf, $penyediaJasaMua->user_id, $penyediaJasaMua->nama);
     
                 if ($filename) {
                     Portofolio::create([
                         'penyedia_jasa_mua_id' => $penyediaJasaMua->id,
-                        'gambar' => $filename,
+                        'file' => $filename,
                     ]);
     
                     $portofolioFiles[] = $filename;
@@ -143,7 +144,7 @@ class RegisterMuaController extends Controller
     private function createHariKetersediaan($penyediaJasaMua, $hariKetersediaan)
     {
         foreach ($hariKetersediaan as $hariKetersediaan) {
-            JamKetersediaan::create([
+            HariKetersediaan::create([
                 'penyedia_jasa_mua_id' => $penyediaJasaMua->id,
                 'hari' => $hariKetersediaan,
             ]);
@@ -154,11 +155,11 @@ class RegisterMuaController extends Controller
     {
         $data = [
             'user' => $user,
-            'foto' => formatFotoUrl($penyediaJasaMua),
+            'foto' => $this->formatFotoUrl($penyediaJasaMua),
             'penyedia_jasa_mua' => $penyediaJasaMua,
-            'portofolio' => formatPortofolioUrls($portofolioFiles, $penyediaJasaMua),
-            'jasa_mua_kategori' => getJasaMuaKategoriName($penyediaJasaMua),
-            'hari_ketersediaan' => getHariKetersediaan($penyediaJasaMua),
+            'portofolio' => $this->formatPortofolioUrls($portofolioFiles, $penyediaJasaMua),
+            'jasa_mua_kategori' => $this->getJasaMuaKategoriName($penyediaJasaMua),
+            'hari_ketersediaan' => $this->getHariKetersediaan($penyediaJasaMua),
         ];
         return $data;
     }

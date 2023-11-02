@@ -16,7 +16,7 @@ class CreateDetailPemesananTable extends Migration
         Schema::create('detail_pemesanan', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('pemesanan_id')->nullable();
-            $table->unsignedBigInteger('layanan_id')->nullable();
+            $table->unsignedBigInteger('layanan_id');
             $table->string('jumlah');
             $table->string('total_harga');
             $table->timestamps();

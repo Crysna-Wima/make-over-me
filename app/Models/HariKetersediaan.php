@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class JamKetersediaan extends Model
+class HariKetersediaan extends Model
 {
     use HasFactory;
 
@@ -17,13 +17,9 @@ class JamKetersediaan extends Model
         'hari',
     ];
 
-    /**
-     * Get the penyediaJasaMua that owns the JamKetersediaan
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function penyediaJasaMua(): BelongsTo
+    // many to one relationship dengan penyedia_jasa_mua
+    public function penyedia_jasa_mua()
     {
-        return $this->belongsTo(PenyediaJasaMua::class, 'penyedia_jasa_mua_id', 'id');
+        return $this->belongsTo(PenyediaJasaMua::class);
     }
 }

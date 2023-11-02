@@ -18,23 +18,15 @@ class DetailPemesanan extends Model
         'total_harga',
     ];
 
-    /**
-     * Get the pemesanan that owns the DetailPemesanan
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function pemesanan()
-    {
-        return $this->belongsTo(Pemesanan::class);
-    }
-
-    /**
-     * Get the layanan that owns the DetailPemesanan
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
+    // one to one relationship dengan layanan
     public function layanan()
     {
         return $this->belongsTo(Layanan::class);
+    }
+
+    // many to one relationship dengan pemesanan
+    public function pemesanan()
+    {
+        return $this->belongsTo(Pemesanan::class);
     }
 }

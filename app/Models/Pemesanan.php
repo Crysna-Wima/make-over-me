@@ -18,33 +18,29 @@ class Pemesanan extends Model
         'status',
     ];
 
-    /**
-     * Get the pencariJasaMua that owns the Pemesanan
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function pencariJasaMua()
+    // many to one relationship dengan pencari_jasa_mua
+    public function pencari_jasa_mua()
     {
         return $this->belongsTo(PencariJasaMua::class);
     }
 
-    /**
-     * Get the penyediaJasaMua that owns the Pemesanan
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function penyediaJasaMua()
+    // many to one relationship dengan penyedia_jasa_mua
+    public function penyedia_jasa_mua()
     {
         return $this->belongsTo(PenyediaJasaMua::class);
     }
 
-    /**
-     * Get all of the detailPemesanan for the Pemesanan
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function detailPemesanan()
+    // one to one relationship dengan ulasan
+    public function ulasan()
+    {
+        return $this->hasOne(Ulasan::class);
+    }
+
+    // one to many dengan detail_pemesanan
+    public function detail_pemesanan()
     {
         return $this->hasMany(DetailPemesanan::class);
     }
+
+    
 }

@@ -17,24 +17,22 @@ class JasaMuaKategori extends Model
         'kategori_layanan_id',
     ];
 
-    /**
-     * Get the penyediaJasaMua that owns the JasaMuaKategori
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function penyediaJasaMua(): BelongsTo
+    // many to one relationship dengan penyedia_jasa_mua
+    public function penyedia_jasa_mua()
     {
-        return $this->belongsTo(PenyediaJasaMua::class, 'penyedia_jasa_mua_id', 'id');
+        return $this->belongsTo(PenyediaJasaMua::class);
     }
 
-    /**
-     * Get the kategoriLayanan that owns the JasaMuaKategori
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function kategoriLayanan(): BelongsTo
+    // many to one relationship dengan kategori_layanan
+    public function kategori_layanan()
     {
-        return $this->belongsTo(KategoriLayanan::class, 'kategori_layanan_id', 'id');
+        return $this->belongsTo(KategoriLayanan::class);
+    }
+
+    // one to one relationship dengan layanan
+    public function layanan()
+    {
+        return $this->hasOne(Layanan::class);
     }
 
 

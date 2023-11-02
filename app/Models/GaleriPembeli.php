@@ -17,23 +17,15 @@ class GaleriPembeli extends Model
         'deskripsi',
     ];
 
-    /**
-     * Get the pencariJasaMua that owns the GaleriPembeli
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function pencariJasaMua()
+    // many to one relationship dengan pencari_jasa_mua
+    public function pencari_jasa_mua()
     {
         return $this->belongsTo(PencariJasaMua::class);
     }
 
-    /**
-     * Get all of the galeriPembeli for the GaleriPembeli
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function galeriPembeli()
+    // many to one relationship dengan detail_pemesanan
+    public function detail_pemesanan()
     {
-        return $this->hasMany(GaleriPembeli::class);
+        return $this->belongsTo(DetailPemesanan::class);
     }
 }
