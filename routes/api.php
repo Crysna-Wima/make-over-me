@@ -44,6 +44,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/pencari-jasa-mua/search-mua', 'API\Dashboard\DashboardClientController@searchMua');
     // route detail mua
     Route::get('/pencari-jasa-mua/detail-mua/{id}', 'API\Dashboard\DetailJasaMuaController@index');
+    // route galeri mua
+    Route::get('/pencari-jasa-mua/detail-mua/{id}', 'API\Dashboard\DetailJasaMuaController@galeri');
 });
 
 
