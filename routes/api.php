@@ -27,9 +27,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/penyedia-jasa-mua/register', 'API\Register\RegisterMuaController@register');
     // Route dashboard penyedia jasa mua
     Route::get('/penyedia-jasa-mua/dashboard/profile', 'API\Dashboard\DashboardMuaController@getProfileMua');
+    // Route layanan MUA
     Route::get('/penyedia-jasa-mua/dashboard/layananmua', 'API\Dashboard\DashboardMuaController@getLayananMua');
+    // Route Pemesanan terbaru
     Route::get('/penyedia-jasa-mua/dashboard/pesananterbaru', 'API\Dashboard\DashboardMuaController@getPemesanan');
+    // Route Ulasan
     Route::get('/penyedia-jasa-mua/dashboard/ulasan', 'API\Dashboard\DashboardMuaController@getUlasan');
+    // Route tolak dan terima pemesanan
+    Route::get('/penyedia-jasa-mua/dashboard/acceptpemesanan/{id}', 'API\Dashboard\DashboardMuaController@acceptPemesanan');
+    Route::get('/penyedia-jasa-mua/dashboard/declinepemesanan/{id}', 'API\Dashboard\DashboardMuaController@declinePemesanan');
 });
 
 
@@ -44,8 +50,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/pencari-jasa-mua/search-mua', 'API\Dashboard\DashboardClientController@searchMua');
     // route detail mua
     Route::get('/pencari-jasa-mua/detail-mua/{id}', 'API\Dashboard\DetailJasaMuaController@index');
-    // route galeri mua
-    Route::get('/pencari-jasa-mua/galeri/{id}', 'API\Dashboard\DetailJasaMuaController@galeri');
 });
 
 
