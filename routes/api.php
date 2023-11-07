@@ -17,8 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', 'API\Auth\AuthController@register');
 Route::post('/login', 'API\Auth\AuthController@login');
 Route::middleware('auth:sanctum')->post('/logout', 'API\Auth\AuthController@logout');
-// Route accept penyedia jasa mua
-Route::post('/penyedia-jasa-mua/accept', 'API\Register\RegisterMuaController@accept');
 
 
 // ==================== ROUTE GROUP FOR DASHBOARD PENYEDIA JASA MUA ====================
@@ -44,14 +42,28 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/pencari-jasa-mua/search-mua', 'API\Dashboard\DashboardClientController@searchMua');
     // route detail mua
     Route::get('/pencari-jasa-mua/detail-mua/{id}', 'API\Dashboard\DetailJasaMuaController@index');
+    // route layanan
+    Route::get('/pencari-jasa-mua/layananMua/{id}', 'API\Layanan\LayananController@getLayananMua');
+    // route cek pemesanan
+    Route::post('/pencari-jasa-mua/cek-pemesanan', 'API\Pemesanan\PemesananController@cekPemesanan');
+    // route autofill pemesanann
+    Route::get('/pencari-jasa-mua/autofill-pemesanan', 'API\Profile\ProfileClientController@getProfileClient');
+    // route create pemesanan
+    Route::post('/pencari-jasa-mua/create-pemesanan', 'API\Pemesanan\PemesananController@createPemesanan');
 });
 
 
 //Route get kecamatans
 Route::get('/kecamatans', 'API\KecamatanController@getKecamatans');
+Route::get('/wilayah-kecamatans', 'API\KecamatanController@getWilayah');
+
+
 //Route get kategori layanans
 Route::get('/kategori-layanans', 'API\KategoriLayananController@getKategoriLayanans');
 //Route get profile
 Route::middleware('auth:sanctum')->get('/profile', 'API\ProfileController@getProfile');
 //Route create layanans
 Route::middleware('auth:sanctum')->post('/layanans', 'API\LayananController@create');
+
+// Route accept penyedia jasa mua
+Route::post('/penyedia-jasa-mua/accept', 'API\Register\RegisterMuaController@accept');
