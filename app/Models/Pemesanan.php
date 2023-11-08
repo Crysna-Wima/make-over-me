@@ -16,6 +16,10 @@ class Pemesanan extends Model
         'penyedia_jasa_mua_id',
         'tanggal_pemesanan',
         'status',
+        'nama_pemesan',
+        'nomor_telepon_pemesan',
+        'gender_pemesan',
+        'keterangan',
     ];
 
     // many to one relationship dengan pencari_jasa_mua

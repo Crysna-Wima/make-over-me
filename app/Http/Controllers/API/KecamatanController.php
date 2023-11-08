@@ -22,4 +22,34 @@ class KecamatanController extends Controller
             'data' => $kecamatans
         ]);
     }
+
+    public function getWilayah(){
+        $wilayah = [
+            [
+                'id' => 1,
+                'nama_wilayah' => 'Surabaya Utara'
+            ],
+            [
+                'id' => 2,
+                'nama_wilayah' => 'Surabaya Timur'
+            ],
+            [
+                'id' => 3,
+                'nama_wilayah' => 'Surabaya Selatan'
+            ],
+            [
+                'id' => 4,
+                'nama_wilayah' => 'Surabaya Barat'
+            ],
+            [
+                'id' => 5,
+                'nama_wilayah' => 'Surabaya Pusat'
+            ],
+        ];
+        return response()->json([
+            'status' => true,
+            'message' => 'Success get wilayah',
+            'data' => $wilayah
+        ]);
+    }
 }
