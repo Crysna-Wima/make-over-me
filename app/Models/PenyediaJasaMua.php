@@ -68,4 +68,14 @@ class PenyediaJasaMua extends Model
     {
         return $this->hasMany(Pemesanan::class);
     }
+
+    public function kategorilayanan()
+    {
+        return $this->belongsToMany(KategoriLayanan::class, 'jasa_mua_kategori', 'penyedia_jasa_mua_id', 'kategori_layanan_id');
+    }
+
+    public function layanan()
+    {
+        return $this->hasMany(Layanan::class);
+    }
 }

@@ -128,4 +128,22 @@ function getKecamatanTerdekat($kecamatan)
     return $kecamatanTerdekat;
 }
 
+function getKecamatanByWilayah($wilayah)
+{
+    $nama_wilayah = '';
+    if ($wilayah == 1){
+        $nama_wilayah = 'Surabaya Utara';
+    } else if ($wilayah == 2){
+        $nama_wilayah = 'Surabaya Timur';
+    } else if ($wilayah == 3){
+        $nama_wilayah = 'Surabaya Selatan';
+    } else if ($wilayah == 4){
+        $nama_wilayah = 'Surabaya Barat';
+    } else if ($wilayah == 5){
+        $nama_wilayah = 'Surabaya Pusat';
+    }
+    $kecamatan = Kecamatan::where('wilayah', $nama_wilayah)->select('id')->get();
+    return $kecamatan;
+}
+
 }

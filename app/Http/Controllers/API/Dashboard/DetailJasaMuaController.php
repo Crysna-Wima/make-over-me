@@ -31,11 +31,10 @@ class DetailJasaMuaController extends Controller
 
         
         // get average rating for this penyedia jasa mua
-        $rating = PenyediaJasaMua::join('layanan', 'layanan.penyedia_jasa_mua_id', '=', 'penyedia_jasa_mua.id')
-            ->join('detail_pemesanan', 'detail_pemesanan.layanan_id', '=', 'layanan.id')
-            ->join('ulasan', 'ulasan.pemesanan_id', '=', 'detail_pemesanan.pemesanan_id')
-            ->where('penyedia_jasa_mua.id', $id)
-            ->avg('ulasan.rating');
+        $rating = Ulasan::join('pemesanan', 'ulasan.pemesanan_id', '=', 'pemesanan.id')
+        ->where('pemesanan.penyedia_jasa_mua_id', $id)
+        ->where('pemesanan.status', 'selesai')
+        ->avg('ulasan.rating');
         
         $rating = number_format($rating, 1);
 
