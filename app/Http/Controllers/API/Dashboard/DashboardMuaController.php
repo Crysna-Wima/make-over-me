@@ -81,7 +81,7 @@ class DashboardMuaController extends Controller
             ->join('kategori_layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
             ->join('pencari_jasa_mua', 'pencari_jasa_mua.id', '=', 'pemesanan.pencari_jasa_mua_id')
             ->where('pemesanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
-            ->where('pemesanan.status', '!=', 'pending')
+            // ->where('pemesanan.status', '!=', 'pending') //not in use
             ->selectRaw('pemesanan.id, pemesanan.tanggal_pemesanan, kategori_layanan.nama as kategori, pencari_jasa_mua.nama as nama_pencari, pencari_jasa_mua.foto as foto, pemesanan.status, pencari_jasa_mua.user_id, pencari_jasa_mua.nama')
             ->get();
     
