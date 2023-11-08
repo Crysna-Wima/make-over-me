@@ -30,7 +30,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route layanan MUA
     Route::get('/penyedia-jasa-mua/dashboard/layananmua', 'API\Dashboard\DashboardMuaController@getLayananMua');
     // Route Pemesanan terbaru
-    Route::get('/penyedia-jasa-mua/dashboard/pesananterbaru', 'API\Dashboard\DashboardMuaController@getPemesanan');
+    Route::get('/penyedia-jasa-mua/dashboard/pesananterbaru', 'API\Dashboard\DashboardMuaController@getPemesananTerbaru');
+    // Route Seluruh Pemesanan
+    Route::get('/penyedia-jasa-mua/dashboard/seluruhpesanan', 'API\Dashboard\DashboardMuaController@getSeluruhPemesanan');
     // Route Ulasan
     Route::get('/penyedia-jasa-mua/dashboard/ulasan', 'API\Dashboard\DashboardMuaController@getUlasan');
     // Route tolak dan terima pemesanan
