@@ -34,8 +34,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route Ulasan
     Route::get('/penyedia-jasa-mua/dashboard/ulasan', 'API\Dashboard\DashboardMuaController@getUlasan');
     // Route tolak dan terima pemesanan
-    Route::get('/penyedia-jasa-mua/dashboard/acceptpemesanan/{id}', 'API\Dashboard\DashboardMuaController@acceptPemesanan');
-    Route::get('/penyedia-jasa-mua/dashboard/declinepemesanan/{id}', 'API\Dashboard\DashboardMuaController@declinePemesanan');
+    Route::get('/penyedia-jasa-mua/pemesanan/acceptpemesanan/{id}', 'API\Pemesanan\PemesananController@acceptPemesanan');
+    Route::get('/penyedia-jasa-mua/pemesanan/declinepemesanan/{id}', 'API\Pemesanan\PemesananController@declinePemesanan');
 });
 
 
