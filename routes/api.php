@@ -33,12 +33,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/penyedia-jasa-mua/dashboard/seluruhpesanan', 'API\Dashboard\DashboardMuaController@getSeluruhPemesanan');
     // Route Ulasan
     Route::get('/penyedia-jasa-mua/dashboard/ulasan', 'API\Dashboard\DashboardMuaController@getUlasan');
+
+    // Route detail pemesanan
+    Route::get('/penyedia-jasa-mua/pemesanan/detailpemesanan/{id}', 'API\Pemesanan\PemesananController@getDetailPemesanan');
     // Route tolak dan terima pemesanan
     Route::get('/penyedia-jasa-mua/pemesanan/acceptpemesanan/{id}', 'API\Pemesanan\PemesananController@acceptPemesanan');
     Route::get('/penyedia-jasa-mua/pemesanan/declinepemesanan/{id}', 'API\Pemesanan\PemesananController@declinePemesanan');
+
     // Route Manajemen Katalog
     Route::get('/penyedia-jasa-mua/katalog/previewmua', 'API\Manajemenkatalog\ManajemenKatalogController@getPreviewMua');
     Route::post('/penyedia-jasa-mua/katalog/createpreviewmua', 'API\Manajemenkatalog\ManajemenKatalogController@createPreviewMua');
+    // Route Katalog Jasa
+    Route::get('/penyedia-jasa-mua/katalog/katalogjasa', 'API\Manajemenkatalog\ManajemenKatalogController@getKatalogJasa');
 });
 
 

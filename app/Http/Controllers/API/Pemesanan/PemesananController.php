@@ -125,4 +125,18 @@ class PemesananController extends Controller
             'data' => $pemesanan,
         ], 200);
     }
+
+    public function getDetailPemesanan($id){
+        $data = Pemesanan::join('detail_pemesanan', 'detail_pemesanan.pemesanan_id', '=', 'pemesanan.id')
+        ->join('layanan', 'detail_pemesanan.layanan_id', '=', 'layanan.id')
+        ->where('pemesanan.id', '=', $id)
+        ->select('layanan.nama', 'detail_pemesanan.jumlah', 'detail_pemesanan.total_harga', 'pemesanan.nama_pemesan', 'pemesanan.nomor_telepon_pemesan', 'pemesanan.gender_pemesan', 'pemesanan.keterangan')
+        ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil menampilkan detail pemesanan',
+            'data' => $data,
+        ], 200);
+    }
 }

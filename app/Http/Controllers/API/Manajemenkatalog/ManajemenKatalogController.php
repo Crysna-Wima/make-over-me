@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\Manajemenkatalog;
 
 use App\Http\Controllers\Controller;
 use App\Models\GaleriPenjual;
+use App\Models\JasaMuaKategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -90,6 +91,23 @@ class ManajemenKatalogController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Berhasil menambahkan data',
+            'data' => $data
+        ]);
+    }
+
+    public function getKatalogJasa()
+    {
+        $data = JasaMuaKategori::join('kategori_layanan', 'jasa_mua_kategori.kategori_layanan_id', '=', 'kategori_layanan.id')
+        ->where('jasa_mua_kategori.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
+        ->get();
+        
+        foreach ($data as $key => $value) {
+            $data[$key]->foto = url('jasa/' . $value->foto);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil menampilkan katalog jasa',
             'data' => $data
         ]);
     }
