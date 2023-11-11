@@ -36,10 +36,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route tolak dan terima pemesanan
     Route::get('/penyedia-jasa-mua/pemesanan/acceptpemesanan/{id}', 'API\Pemesanan\PemesananController@acceptPemesanan');
     Route::get('/penyedia-jasa-mua/pemesanan/declinepemesanan/{id}', 'API\Pemesanan\PemesananController@declinePemesanan');
-    // Route detail pemesanan
-    Route::get('/pencari-jasa-mua/detail-mua/{id}', 'API\Dashboard\DetailJasaMuaController@index');
+    // Route Manajemen Katalog
+    Route::get('/penyedia-jasa-mua/katalog/previewmua', 'API\Manajemenkatalog\ManajemenKatalogController@getPreviewMua');
+    Route::get('/penyedia-jasa-mua/katalog/createpreviewmua', 'API\Manajemenkatalog\ManajemenKatalogController@createPreviewMua');
 });
-
 
 
 // ==================== ROUTE GROUP FOR DASHBOARD PENCARI JASA MUA ====================
