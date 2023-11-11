@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API\Manajemenkatalog;
 
 use App\Http\Controllers\Controller;
 use App\Models\GaleriPenjual;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -19,7 +19,7 @@ class ManajemenKatalogController extends Controller
         foreach ($data as $key => $value) {
             $data[$key]->foto = url('file/' . auth()->user()->id . "_" . auth()->user()->penyedia_jasa_mua->nama . '/galeri_penjual/' . $value->foto);
         }
-        // $data->foto = url('file/' . auth()->user()->id . "_" . $data->nama . '/galeri_penjual/' . $data->foto);
+
 
         return response()->json([
             'success' => true,
