@@ -51,14 +51,37 @@ class DashboardMuaController extends Controller
         ]);
     }
     
-    public function getPemesanan()
+    public function getPemesananTerbaru()
     {
         $data = Pemesanan::join('detail_pemesanan', 'detail_pemesanan.pemesanan_id', '=', 'pemesanan.id')
             ->join('layanan', 'layanan.id', '=', 'detail_pemesanan.layanan_id')
             ->join('kategori_layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
             ->join('pencari_jasa_mua', 'pencari_jasa_mua.id', '=', 'pemesanan.pencari_jasa_mua_id')
-            ->where('layanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
-            ->where('pemesanan.status', '!=', 1)
+            ->where('pemesanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
+            ->where('pemesanan.status', '=', 'pending')
+            ->selectRaw('pemesanan.id, pemesanan.tanggal_pemesanan, kategori_layanan.nama as kategori, pencari_jasa_mua.nama as nama_pencari, pencari_jasa_mua.foto as foto, pemesanan.status, pencari_jasa_mua.user_id, pencari_jasa_mua.nama')
+            ->get();
+    
+        foreach ($data as $key => $value) {
+            $data[$key]->tanggal_pemesanan = date('d-m-Y', strtotime($value->tanggal_pemesanan));
+            $data[$key]->foto = $this->formatFotoUrl($value);
+        }
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil mendapatkan data',
+            'data' => $data
+        ]);
+    }
+
+    public function getSeluruhPemesanan()
+    {
+        $data = Pemesanan::join('detail_pemesanan', 'detail_pemesanan.pemesanan_id', '=', 'pemesanan.id')
+            ->join('layanan', 'layanan.id', '=', 'detail_pemesanan.layanan_id')
+            ->join('kategori_layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
+            ->join('pencari_jasa_mua', 'pencari_jasa_mua.id', '=', 'pemesanan.pencari_jasa_mua_id')
+            ->where('pemesanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
+            // ->where('pemesanan.status', '!=', 'pending') //not in use
             ->selectRaw('pemesanan.id, pemesanan.tanggal_pemesanan, kategori_layanan.nama as kategori, pencari_jasa_mua.nama as nama_pencari, pencari_jasa_mua.foto as foto, pemesanan.status, pencari_jasa_mua.user_id, pencari_jasa_mua.nama')
             ->get();
     
@@ -95,5 +118,4 @@ class DashboardMuaController extends Controller
             'data' => $data
         ]);
     }
-    
 }

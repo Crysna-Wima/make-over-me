@@ -25,11 +25,27 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/penyedia-jasa-mua/register', 'API\Register\RegisterMuaController@register');
     // Route dashboard penyedia jasa mua
     Route::get('/penyedia-jasa-mua/dashboard/profile', 'API\Dashboard\DashboardMuaController@getProfileMua');
+    // Route layanan MUA
     Route::get('/penyedia-jasa-mua/dashboard/layananmua', 'API\Dashboard\DashboardMuaController@getLayananMua');
-    Route::get('/penyedia-jasa-mua/dashboard/pesananterbaru', 'API\Dashboard\DashboardMuaController@getPemesanan');
+    // Route Pemesanan terbaru
+    Route::get('/penyedia-jasa-mua/dashboard/pesananterbaru', 'API\Dashboard\DashboardMuaController@getPemesananTerbaru');
+    // Route Seluruh Pemesanan
+    Route::get('/penyedia-jasa-mua/dashboard/seluruhpesanan', 'API\Dashboard\DashboardMuaController@getSeluruhPemesanan');
+    // Route Ulasan
     Route::get('/penyedia-jasa-mua/dashboard/ulasan', 'API\Dashboard\DashboardMuaController@getUlasan');
-});
 
+    // Route detail pemesanan
+    Route::get('/penyedia-jasa-mua/pemesanan/detailpemesanan/{id}', 'API\Pemesanan\PemesananController@getDetailPemesanan');
+    // Route tolak dan terima pemesanan
+    Route::get('/penyedia-jasa-mua/pemesanan/acceptpemesanan/{id}', 'API\Pemesanan\PemesananController@acceptPemesanan');
+    Route::get('/penyedia-jasa-mua/pemesanan/declinepemesanan/{id}', 'API\Pemesanan\PemesananController@declinePemesanan');
+
+    // Route Manajemen Katalog
+    Route::get('/penyedia-jasa-mua/katalog/previewmua', 'API\Manajemenkatalog\ManajemenKatalogController@getPreviewMua');
+    Route::post('/penyedia-jasa-mua/katalog/createpreviewmua', 'API\Manajemenkatalog\ManajemenKatalogController@createPreviewMua');
+    // Route Katalog Jasa
+    Route::get('/penyedia-jasa-mua/katalog/katalogjasa', 'API\Manajemenkatalog\ManajemenKatalogController@getKatalogJasa');
+});
 
 
 // ==================== ROUTE GROUP FOR DASHBOARD PENCARI JASA MUA ====================
