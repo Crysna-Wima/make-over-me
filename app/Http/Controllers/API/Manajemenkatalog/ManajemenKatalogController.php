@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Manajemenkatalog;
 use App\Http\Controllers\Controller;
 use App\Models\GaleriPenjual;
 use App\Models\JasaMuaKategori;
+use App\Models\Layanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -108,6 +109,37 @@ class ManajemenKatalogController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Berhasil menampilkan katalog jasa',
+            'data' => $data
+        ]);
+    }
+
+    public function getPreviewKatalog($id)
+    {
+        $data = JasaMuaKategori::join('kategori_layanan', 'jasa_mua_kategori.kategori_layanan_id', '=', 'kategori_layanan.id')
+        ->join('layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
+        ->where('layanan.jasa_mua_kategori_id', $id)
+        ->select('layanan.id', 'kategori_layanan.foto', 'kategori_layanan.nama', 'layanan.durasi', 'layanan.harga')
+        ->first();
+        
+        $data->foto = url('jasa/' . $data->foto);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil preview jasa',
+            'data' => $data
+        ]);
+    }
+
+    public function editKatalogJasa(Request $request)
+    {
+        $data = Layanan::where('id', $request->id)->update([
+            'harga'=>$request->harga,
+            'durasi'=>$request->durasi
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil edit katalog jasa',
             'data' => $data
         ]);
     }
