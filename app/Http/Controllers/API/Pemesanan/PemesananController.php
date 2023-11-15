@@ -99,4 +99,16 @@ class PemesananController extends Controller
             ]);
         }
     }
+
+    public function getPemesanan(Request $request){
+        $user = auth()->user();
+        $pencariJasaMua = PencariJasaMua::where('user_id', $user->id)->first();
+        $pemesanan = $pencariJasaMua->pemesanan()->with('detailPemesanan.layanan')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil mendapatkan data pemesanan',
+            'data' => $pemesanan,
+        ]);
+    }
 }
