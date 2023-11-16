@@ -216,7 +216,5 @@ class DashboardClientController extends Controller
             ->where('pemesanan.penyedia_jasa_mua_id', $id)
             ->where('pemesanan.status', 'selesai')
             ->avg('ulasan.rating');
-
-        $data = GaleriPenjual::join('peyedia_jasa_mua', 'peyedia_')
     }
 }

@@ -7,6 +7,7 @@ use App\Models\PenyediaJasaMua;
 use App\Models\Pemesanan;
 use App\Models\PencariJasaMua;
 use App\Models\DetailPemesanan;
+use App\Models\Ulasan;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Http\Request;
@@ -150,5 +151,55 @@ class PemesananController extends Controller
             'message' => 'Berhasil menampilkan detail pemesanan',
             'data' => $data,
         ], 200);
+    }
+
+    public function getPemesananDone(){
+        $user = auth()->user();
+        $pencariJasaMua = PencariJasaMua::where('user_id', $user->id)->first();
+        $pemesanan = Pemesanann::join('penyedia_jasa_mua', 'penyedia_jasa_mua.id', '=', 'pemesanan.penyedia_jasa_mua_id')
+        ->join('detail_pemesanan', 'detail_pemesanan.pemesanan_id', '=', 'pemesanan.id')
+        ->join('layanan', 'detail_pemesanan.layanan_id', '=', 'layanan.id')
+        ->join('jasa_mua_kategori', 'jasa_mua_kategori.penyedia_jasa_mua_id', '=', 'penyedia_jasa_mua.id')
+        ->join('kategori_layanan', 'kategori_layanan.id', '=', 'jasa_mua_kategori.kategori_layanan_id')
+        ->where('pemesanan.pencari_jasa_mua_id', '=', $pencariJasaMua->id)
+        ->where('pemesanan.status', '=', 'done')
+        ->select('penyedia_jasa_mua.nama_jasa_mua as nama', 'kategori_layanan.nama as jenis_jasa', 'pemesanan.tanggal_pemesanan', 'penyedia_jasa_mua.foto')
+        ->get();
+
+        //jika pemesanan memiliki review
+        $review = Ulasan::where('pemesanan_id', '=', 'pemesanan.id')
+                ->select('ulasan.id', 'ulasan.rating', 'ulasan.komentar', 'ulasan.tanggal')
+                ->first();
+        
+        if($review){
+            $pemesanan->review = $review;
+        }
+
+        foreach ($pemesanan as $key => $value) {
+            $pemesanan[$key]->foto = $this->formatFotoUrl($value);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil mendapatkan data pemesanan',
+            'data' => $pemesanan,
+        ]); 
+    }
+
+    public function getDetailPemesananDone($id){
+        $data = Pemesanan::join('penyedia_jasa_mua', 'penyedia_jasa_mua.id', '=', 'pemesanan.penyedia_jasa_mua_id')
+        ->join('detail_pemesanan', 'detail_pemesanan.pemesanan_id', '=', 'pemesanan.id')
+        ->join('layanan', 'detail_pemesanan.layanan_id', '=', 'layanan.id')
+        ->join('jasa_mua_kategori', 'jasa_mua_kategori.penyedia_jasa_mua_id', '=', 'penyedia_jasa_mua.id')
+        ->join('kategori_layanan', 'kategori_layanan.id', '=', 'jasa_mua_kategori.kategori_layanan_id')
+        ->where('pemesanan.id', '=', $id)
+        ->select('penyedia_jasa_mua.nama_jasa_mua as nama', 'kategori_layanan.nama as jenis_jasa', 'pemesanan.tanggal_pemesanan')
+        ->first();
+
+        return response()->json([
+            'status'=> 'success',
+            'message'=> 'Berhasil mendapatkan data detail pemesanan',
+            'data'=> $data
+        ]);
     }
 }
