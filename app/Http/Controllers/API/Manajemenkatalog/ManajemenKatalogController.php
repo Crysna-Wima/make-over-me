@@ -134,7 +134,7 @@ class ManajemenKatalogController extends Controller
     {
         $data = Layanan::where('id', $request->id)->update([
             'harga'=>$request->harga,
-            'durasi'=>$request->durasi
+            'durasi'=>$request->durasi,
         ]);
 
         return response()->json([
