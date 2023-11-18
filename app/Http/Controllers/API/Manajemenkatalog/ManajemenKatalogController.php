@@ -130,8 +130,9 @@ class ManajemenKatalogController extends Controller
         ]);
     }
 
-    public function editKatalogJasa(Request $request)
+    public function updateKatalogJasa(Request $request)
     {
+
         $data = Layanan::where('id', $request->id)->update([
             'harga'=>$request->harga,
             'durasi'=>$request->durasi,
