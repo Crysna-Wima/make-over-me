@@ -161,7 +161,7 @@ class PemesananController extends Controller
             ->join('layanan', 'detail_pemesanan.layanan_id', '=', 'layanan.id')
             ->join('kategori_layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
             ->where('pemesanan.pencari_jasa_mua_id', '=', $pencariJasaMua->id)
-            ->where('pemesanan.status', '=', 'accept')
+            ->wherein('pemesanan.status', ['done', 'accept'])
             ->where('pemesanan.tanggal_pemesanan', '<', date('Y-m-d'))
             ->select('pemesanan.id', 'penyedia_jasa_mua.user_id','penyedia_jasa_mua.nama as nama', 'kategori_layanan.nama as jenis_jasa', 'pemesanan.tanggal_pemesanan', 'penyedia_jasa_mua.foto')
             ->get();

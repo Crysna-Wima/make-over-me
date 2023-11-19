@@ -31,7 +31,7 @@ class ReviewController extends Controller
         DB::beginTransaction();
         try {
             $pemesanan = Pemesanan::where('id', $request->pemesanan_id)->first();
-            if ($pemesanan->status != 'done') {
+            if ($pemesanan->status != 'accept' && $pemesanan->tanggal_pemesanan < date('Y-m-d')) {
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'Pemesanan belum selesai',
