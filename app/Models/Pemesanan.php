@@ -40,10 +40,10 @@ class Pemesanan extends Model
         return $this->hasOne(Ulasan::class);
     }
 
-    // one to many dengan detail_pemesanan
+    // one to one dengan detail_pemesanan
     public function detail_pemesanan()
     {
-        return $this->hasMany(DetailPemesanan::class);
+        return $this->hasOne(DetailPemesanan::class);
     }
 
     

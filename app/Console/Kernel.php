@@ -15,7 +15,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+            // buat agar status pemesanan yang accept ketika melewati tanggal_pemesanan menjadi done
+            $schedule->command('pemesanan:update-pemesanan-status')->dailyAt('00:00');
     }
 
     /**

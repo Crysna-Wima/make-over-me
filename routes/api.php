@@ -71,6 +71,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/pencari-jasa-mua/autofill-pemesanan', 'API\Profile\ProfileClientController@getProfileClient');
     // route create pemesanan
     Route::post('/pencari-jasa-mua/create-pemesanan', 'API\Pemesanan\PemesananController@createPemesanan');
+    // route get pemesanan done
+    Route::get('/pencari-jasa-mua/pemesanan-done', 'API\Pemesanan\PemesananController@getPemesananDone');
+    // route create review
+    Route::post('/pencari-jasa-mua/create-review', 'API\Review\ReviewController@createReview');
+    // route get review
+    Route::get('/pencari-jasa-mua/get-review/{id}', 'API\Review\ReviewController@getReview');
 });
 
 
