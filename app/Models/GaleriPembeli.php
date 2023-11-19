@@ -13,6 +13,7 @@ class GaleriPembeli extends Model
 
     protected $fillable = [
         'pencari_jasa_mua_id',
+        'ulasan_id',
         'foto',
         'deskripsi',
     ];

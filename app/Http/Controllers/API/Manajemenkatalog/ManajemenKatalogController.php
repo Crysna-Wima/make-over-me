@@ -96,6 +96,19 @@ class ManajemenKatalogController extends Controller
         ]);
     }
 
+    public function deletePreviewMua($id)
+    {
+        $data = GaleriPenjual::where('id', $id)->first();
+        unlink('file/' . auth()->user()->id . "_" . auth()->user()->penyedia_jasa_mua->nama . '/galeri_penjual/' . $data->foto);
+        $data->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil menghapus data',
+            'data' => $data
+        ]);
+    }
+
     public function getKatalogJasa()
     {
         $data = JasaMuaKategori::join('kategori_layanan', 'jasa_mua_kategori.kategori_layanan_id', '=', 'kategori_layanan.id')

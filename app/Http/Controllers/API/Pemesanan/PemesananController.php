@@ -156,50 +156,35 @@ class PemesananController extends Controller
     public function getPemesananDone(){
         $user = auth()->user();
         $pencariJasaMua = PencariJasaMua::where('user_id', $user->id)->first();
-        $pemesanan = Pemesanann::join('penyedia_jasa_mua', 'penyedia_jasa_mua.id', '=', 'pemesanan.penyedia_jasa_mua_id')
-        ->join('detail_pemesanan', 'detail_pemesanan.pemesanan_id', '=', 'pemesanan.id')
-        ->join('layanan', 'detail_pemesanan.layanan_id', '=', 'layanan.id')
-        ->join('jasa_mua_kategori', 'jasa_mua_kategori.penyedia_jasa_mua_id', '=', 'penyedia_jasa_mua.id')
-        ->join('kategori_layanan', 'kategori_layanan.id', '=', 'jasa_mua_kategori.kategori_layanan_id')
-        ->where('pemesanan.pencari_jasa_mua_id', '=', $pencariJasaMua->id)
-        ->where('pemesanan.status', '=', 'done')
-        ->select('penyedia_jasa_mua.nama_jasa_mua as nama', 'kategori_layanan.nama as jenis_jasa', 'pemesanan.tanggal_pemesanan', 'penyedia_jasa_mua.foto')
-        ->get();
-
-        //jika pemesanan memiliki review
-        $review = Ulasan::where('pemesanan_id', '=', 'pemesanan.id')
+        $pemesanan = Pemesanan::join('penyedia_jasa_mua', 'penyedia_jasa_mua.id', '=', 'pemesanan.penyedia_jasa_mua_id')
+            ->join('detail_pemesanan', 'detail_pemesanan.pemesanan_id', '=', 'pemesanan.id')
+            ->join('layanan', 'detail_pemesanan.layanan_id', '=', 'layanan.id')
+            ->join('kategori_layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
+            ->where('pemesanan.pencari_jasa_mua_id', '=', $pencariJasaMua->id)
+            ->where('pemesanan.status', '=', 'accept')
+            ->where('pemesanan.tanggal_pemesanan', '<', date('Y-m-d'))
+            ->select('pemesanan.id', 'penyedia_jasa_mua.user_id','penyedia_jasa_mua.nama as nama', 'kategori_layanan.nama as jenis_jasa', 'pemesanan.tanggal_pemesanan', 'penyedia_jasa_mua.foto')
+            ->get();
+    
+        foreach ($pemesanan as $key => $value) {
+            // Ambil data review untuk pemesanan tertentu
+            $review = Ulasan::where('pemesanan_id', '=', $value->id)
                 ->select('ulasan.id', 'ulasan.rating', 'ulasan.komentar', 'ulasan.tanggal')
                 ->first();
-        
-        if($review){
-            $pemesanan->review = $review;
-        }
-
-        foreach ($pemesanan as $key => $value) {
+    
+            if ($review) {
+                // Jika review ditemukan, masukkan ke dalam kolom review pada objek pemesanan
+                $pemesanan[$key]->review = $review;
+            }
+    
             $pemesanan[$key]->foto = $this->formatFotoUrl($value);
         }
-
+    
         return response()->json([
             'status' => 'success',
             'message' => 'Berhasil mendapatkan data pemesanan',
             'data' => $pemesanan,
         ]); 
     }
-
-    public function getDetailPemesananDone($id){
-        $data = Pemesanan::join('penyedia_jasa_mua', 'penyedia_jasa_mua.id', '=', 'pemesanan.penyedia_jasa_mua_id')
-        ->join('detail_pemesanan', 'detail_pemesanan.pemesanan_id', '=', 'pemesanan.id')
-        ->join('layanan', 'detail_pemesanan.layanan_id', '=', 'layanan.id')
-        ->join('jasa_mua_kategori', 'jasa_mua_kategori.penyedia_jasa_mua_id', '=', 'penyedia_jasa_mua.id')
-        ->join('kategori_layanan', 'kategori_layanan.id', '=', 'jasa_mua_kategori.kategori_layanan_id')
-        ->where('pemesanan.id', '=', $id)
-        ->select('penyedia_jasa_mua.nama_jasa_mua as nama', 'kategori_layanan.nama as jenis_jasa', 'pemesanan.tanggal_pemesanan')
-        ->first();
-
-        return response()->json([
-            'status'=> 'success',
-            'message'=> 'Berhasil mendapatkan data detail pemesanan',
-            'data'=> $data
-        ]);
-    }
+    
 }
