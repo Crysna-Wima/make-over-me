@@ -12,6 +12,7 @@ class Layanan extends Model
     protected $table = 'layanan';
 
     protected $fillable = [
+        'kategori_layanan_id',
         'penyedia_jasa_mua_id',
         'jasa_mua_kategori_id',
         'nama',

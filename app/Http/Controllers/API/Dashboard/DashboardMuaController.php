@@ -103,8 +103,10 @@ class DashboardMuaController extends Controller
             ->join('layanan', 'layanan.id', '=', 'detail_pemesanan.layanan_id')
             ->join('ulasan', 'ulasan.pemesanan_id', '=', 'pemesanan.id')
             ->join('pencari_jasa_mua', 'pencari_jasa_mua.id', '=', 'pemesanan.pencari_jasa_mua_id')
+            ->join('galeri_pembeli', 'galeri_pembeli.ulasan_id', '=', 'ulasan.id')
             ->where('layanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
-            ->selectRaw('pemesanan.id, pemesanan.tanggal_pemesanan, pencari_jasa_mua.nama as nama_pencari, pencari_jasa_mua.foto as foto, ulasan.rating, ulasan.komentar, pencari_jasa_mua.user_id, pencari_jasa_mua.nama')
+            ->where('pemesanan.status', '=', 'done')
+            ->selectRaw('pemesanan.id, pemesanan.tanggal_pemesanan, pencari_jasa_mua.nama as nama_pencari, pencari_jasa_mua.foto as foto, galeri_pembeli.foto as foto_ulasan, ulasan.rating, ulasan.komentar, pencari_jasa_mua.user_id, pencari_jasa_mua.nama')
             ->get();
     
         foreach ($data as $key => $value) {

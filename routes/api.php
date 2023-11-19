@@ -43,10 +43,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route Manajemen Katalog
     Route::get('/penyedia-jasa-mua/katalog/previewmua', 'API\Manajemenkatalog\ManajemenKatalogController@getPreviewMua');
     Route::post('/penyedia-jasa-mua/katalog/createpreviewmua', 'API\Manajemenkatalog\ManajemenKatalogController@createPreviewMua');
-    // Route Katalog Jasa dan edit katalog jasa
+    Route::post('/penyedia-jasa-mua/katalog/deletepreviewmua/{id}', 'API\Manajemenkatalog\ManajemenKatalogController@deletePreviewMua');
+    // Route Katalog Jasa, update katalog jasa, tambah katalog jasa, get katalog jasa
     Route::get('/penyedia-jasa-mua/katalog/katalogjasa', 'API\Manajemenkatalog\ManajemenKatalogController@getKatalogJasa');
     Route::get('/penyedia-jasa-mua/katalog/previewkatalogjasa/{id}', 'API\Manajemenkatalog\ManajemenKatalogController@getPreviewKatalog');
     Route::post('/penyedia-jasa-mua/katalog/updatekatalogjasa', 'API\Manajemenkatalog\ManajemenKatalogController@updateKatalogJasa');
+    Route::get('/penyedia-jasa-mua/katalog/kategorilayanan', 'API\Manajemenkatalog\ManajemenKatalogController@getKategoriLayanan');
+    Route::post('/penyedia-jasa-mua/katalog/createkatalogjasa', 'API\Manajemenkatalog\ManajemenKatalogController@createKatalogJasa');
 });
 
 
