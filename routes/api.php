@@ -50,6 +50,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/penyedia-jasa-mua/katalog/updatekatalogjasa', 'API\Manajemenkatalog\ManajemenKatalogController@updateKatalogJasa');
     Route::get('/penyedia-jasa-mua/katalog/kategorilayanan', 'API\Manajemenkatalog\ManajemenKatalogController@getKategoriLayanan');
     Route::post('/penyedia-jasa-mua/katalog/createkatalogjasa', 'API\Manajemenkatalog\ManajemenKatalogController@createKatalogJasa');
+    
+    // Route Seluruh Pesanan dan Detil Pesanan
+    Route::get('/penyedia-jasa-mua/ulasan/seluruhulasan', 'API\Ulasan\UlasanController@getSeluruhUlasan');
 });
 
 
