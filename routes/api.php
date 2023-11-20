@@ -53,6 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Route Seluruh Pesanan dan Detil Pesanan
     Route::get('/penyedia-jasa-mua/ulasan/seluruhulasan', 'API\Ulasan\UlasanController@getSeluruhUlasan');
+    Route::get('/penyedia-jasa-mua/ulasan/detailulasan/{id}', 'API\Ulasan\UlasanController@getDetailUlasan');
 });
 
 
