@@ -57,9 +57,10 @@ class DashboardMuaController extends Controller
             ->join('layanan', 'layanan.id', '=', 'detail_pemesanan.layanan_id')
             ->join('kategori_layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
             ->join('pencari_jasa_mua', 'pencari_jasa_mua.id', '=', 'pemesanan.pencari_jasa_mua_id')
+            ->join('kecamatan', 'kecamatan.id', '=', 'pencari_jasa_mua.alamat')
             ->where('pemesanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
             ->where('pemesanan.status', '=', 'pending')
-            ->selectRaw('pemesanan.id, pemesanan.tanggal_pemesanan, kategori_layanan.nama as kategori, pencari_jasa_mua.nama as nama_pencari, pencari_jasa_mua.foto as foto, pemesanan.status, pencari_jasa_mua.user_id, pencari_jasa_mua.nama')
+            ->selectRaw('pemesanan.id, pemesanan.tanggal_pemesanan, kategori_layanan.nama as kategori, pencari_jasa_mua.nama as nama_pencari, pencari_jasa_mua.foto as foto, pemesanan.status, pencari_jasa_mua.user_id, kecamatan.nama_kecamatan as alamat, pencari_jasa_mua.nama')
             ->get();
     
         foreach ($data as $key => $value) {
@@ -107,7 +108,8 @@ class DashboardMuaController extends Controller
             ->leftJoin('galeri_pembeli', 'galeri_pembeli.ulasan_id', '=', 'ulasan.id') // Left join to include cases where there's no galeri_pembeli entry
             ->where('layanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
             ->where('pemesanan.status', '=', 'done')
-            ->select('pemesanan.id', 'pemesanan.tanggal_pemesanan', 'pencari_jasa_mua.nama as nama', 'pencari_jasa_mua.foto as foto', 'galeri_pembeli.foto as foto_ulasan', 'ulasan.rating', 'ulasan.komentar', 'pencari_jasa_mua.user_id', 'penyedia_jasa_mua.user_id as user_id_mua', 'penyedia_jasa_mua.nama as nama_mua')
+            ->select('pemesanan.id', 'pemesanan.tanggal_pemesanan', 'pencari_jasa_mua.nama as nama', 'pencari_jasa_mua.foto as foto', 'galeri_pembeli.foto as foto_ulasan', 'ulasan.rating', 'ulasan.komentar', 'layanan.nama as nama_layanan', 'pencari_jasa_mua.user_id', 'penyedia_jasa_mua.user_id as user_id_mua', 'penyedia_jasa_mua.nama as nama_mua')
+            ->limit(3)
             ->get();
     
         $groupedData = [];
@@ -127,6 +129,7 @@ class DashboardMuaController extends Controller
                     'foto' => $foto,
                     'foto_ulasan' => [],
                     'rating' => $value->rating,
+                    'nama_layanan' => $value->nama_layanan,
                     'komentar' => $value->komentar,
                     'user_id' => $value->user_id,
                 ];
@@ -143,7 +146,7 @@ class DashboardMuaController extends Controller
     
         return response()->json([
             'success' => true,
-            'message' => 'Berhasil mendapatkan data',
+            'message' => 'Berhasil mendapatkan ulasan',
             'data' => $groupedData
         ]);
     }
