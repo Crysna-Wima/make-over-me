@@ -7,6 +7,7 @@ use App\Models\PenyediaJasaMua;
 use App\Models\Pemesanan;
 use App\Models\PencariJasaMua;
 use App\Models\DetailPemesanan;
+use App\Models\Ulasan;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Http\Request;
@@ -100,6 +101,18 @@ class PemesananController extends Controller
         }
     }
 
+    public function getPemesanan(Request $request){
+        $user = auth()->user();
+        $pencariJasaMua = PencariJasaMua::where('user_id', $user->id)->first();
+        $pemesanan = $pencariJasaMua->pemesanan()->with('detailPemesanan.layanan')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil mendapatkan data pemesanan',
+            'data' => $pemesanan,
+        ]);
+    }
+    
     public function acceptPemesanan($id)
     {
         $pemesanan = Pemesanan::find($id);
@@ -139,4 +152,39 @@ class PemesananController extends Controller
             'data' => $data,
         ], 200);
     }
+
+    public function getPemesananDone(){
+        $user = auth()->user();
+        $pencariJasaMua = PencariJasaMua::where('user_id', $user->id)->first();
+        $pemesanan = Pemesanan::join('penyedia_jasa_mua', 'penyedia_jasa_mua.id', '=', 'pemesanan.penyedia_jasa_mua_id')
+            ->join('detail_pemesanan', 'detail_pemesanan.pemesanan_id', '=', 'pemesanan.id')
+            ->join('layanan', 'detail_pemesanan.layanan_id', '=', 'layanan.id')
+            ->join('kategori_layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
+            ->where('pemesanan.pencari_jasa_mua_id', '=', $pencariJasaMua->id)
+            ->wherein('pemesanan.status', ['done', 'accept'])
+            ->where('pemesanan.tanggal_pemesanan', '<', date('Y-m-d'))
+            ->select('pemesanan.id', 'penyedia_jasa_mua.user_id','penyedia_jasa_mua.nama as nama', 'kategori_layanan.nama as jenis_jasa', 'pemesanan.tanggal_pemesanan', 'penyedia_jasa_mua.foto')
+            ->get();
+    
+        foreach ($pemesanan as $key => $value) {
+            // Ambil data review untuk pemesanan tertentu
+            $review = Ulasan::where('pemesanan_id', '=', $value->id)
+                ->select('ulasan.id', 'ulasan.rating', 'ulasan.komentar', 'ulasan.tanggal')
+                ->first();
+    
+            if ($review) {
+                // Jika review ditemukan, masukkan ke dalam kolom review pada objek pemesanan
+                $pemesanan[$key]->review = $review;
+            }
+    
+            $pemesanan[$key]->foto = $this->formatFotoUrl($value);
+        }
+    
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil mendapatkan data pemesanan',
+            'data' => $pemesanan,
+        ]); 
+    }
+    
 }

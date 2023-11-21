@@ -10,6 +10,7 @@ class Ulasan extends Model
     use HasFactory;
 
     protected $table = 'ulasan';
+    public $timestamps = false;
 
     protected $fillable = [
         'pemesanan_id',

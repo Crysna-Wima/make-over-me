@@ -150,4 +150,5 @@ class DashboardMuaController extends Controller
             'data' => $groupedData
         ]);
     }
+    
 }
