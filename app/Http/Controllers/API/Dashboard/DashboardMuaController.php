@@ -127,11 +127,11 @@ class DashboardMuaController extends Controller
                     'tanggal_pemesanan' => $tanggal_pemesanan,
                     'nama' => $value->nama,
                     'foto' => $foto,
-                    'foto_ulasan' => [],
                     'rating' => $value->rating,
                     'nama_layanan' => $value->nama_layanan,
                     'komentar' => $value->komentar,
                     'user_id' => $value->user_id,
+                    'foto_ulasan' => [],
                 ];
             }
     
