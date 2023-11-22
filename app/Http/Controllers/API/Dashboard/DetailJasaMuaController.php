@@ -115,7 +115,7 @@ class DetailJasaMuaController extends Controller
             ->join('kecamatan', 'kecamatan.id', '=', 'penyedia_jasa_mua.lokasi_jasa_mua')
             ->where('pemesanan.penyedia_jasa_mua_id', $id)
             ->where('pemesanan.status', 'done')
-            ->select('pemesanan.id as id', 'pencari_jasa_mua.foto as foto', 'pemesanan.tanggal_pemesanan as tanggal_pemesanan', 'kategori_layanan.nama as nama_kategori', 'ulasan.id as ulasan_id', 'ulasan.rating as rating', 'ulasan.ulasan as ulasan', 'penyedia_jasa_mua.nama as nama_mua', 'penyedia_jasa_mua.user_id as user_id')
+            ->select('pemesanan.id as id', 'pencari_jasa_mua.foto as foto', 'pemesanan.tanggal_pemesanan as tanggal_pemesanan', 'kategori_layanan.nama as nama_kategori', 'ulasan.id as ulasan_id', 'ulasan.rating as rating', 'ulasan.komentar as komentar', 'penyedia_jasa_mua.nama as nama_mua', 'kecamatan.nama_kecamatan as lokasi', 'penyedia_jasa_mua.user_id as user_id')
             ->orderBy('pemesanan.tanggal_pemesanan', 'desc')
             ->limit(3)
             ->get();
@@ -125,6 +125,7 @@ class DetailJasaMuaController extends Controller
 
         foreach ($review as $key => $value) {
             $review[$key]->foto_review = GaleriPembeli::where('ulasan_id', $value->ulasan_id)->select('foto')->get();
+            $review[$key]->lokasi = $value->lokasi . ', Surabaya';
 
             // Organize photos into a new array based on the category name
             foreach ($review[$key]->foto_review as $key2 => $value2) {
