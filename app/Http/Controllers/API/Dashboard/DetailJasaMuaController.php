@@ -115,7 +115,7 @@ class DetailJasaMuaController extends Controller
             ->join('kecamatan', 'kecamatan.id', '=', 'penyedia_jasa_mua.lokasi_jasa_mua')
             ->where('pemesanan.penyedia_jasa_mua_id', $id)
             ->where('pemesanan.status', 'done')
-            ->select('pemesanan.id as id', 'pencari_jasa_mua.foto as foto', 'pemesanan.tanggal_pemesanan as tanggal_pemesanan', 'kategori_layanan.nama as nama_kategori', 'ulasan.id as ulasan_id', 'ulasan.rating as rating', 'ulasan.komentar as komentar', 'penyedia_jasa_mua.nama as nama_mua', 'kecamatan.nama_kecamatan as lokasi', 'penyedia_jasa_mua.user_id as user_id')
+            ->select('pemesanan.id as id', 'pencari_jasa_mua.foto as foto', 'pemesanan.tanggal_pemesanan as tanggal_pemesanan', 'kategori_layanan.nama as nama_kategori', 'ulasan.id as ulasan_id', 'ulasan.rating as rating', 'ulasan.komentar as komentar', 'pencari_jasa_mua.nama as nama', 'kecamatan.nama_kecamatan as lokasi', 'pencari_jasa_mua.user_id as user_id', 'penyedia_jasa_mua.nama as nama_mua', 'penyedia_jasa_mua.user_id as user_id_mua')
             ->orderBy('pemesanan.tanggal_pemesanan', 'desc')
             ->limit(3)
             ->get();
@@ -130,7 +130,7 @@ class DetailJasaMuaController extends Controller
             // Organize photos into a new array based on the category name
             foreach ($review[$key]->foto_review as $key2 => $value2) {
                 $categoryName = strtolower(str_replace(' ', '_', $value->nama_kategori));
-                $photoUrl = url('file/' . $value->user_id . "_" . $value->nama_mua . '/review/' . $value2->foto);
+                $photoUrl = url('file/' . $value->user_id_mua . "_" . $value->nama_mua . '/review/' . $value2->foto);
 
                 $review[$key]->foto_review[$key2] = $photoUrl;
 
