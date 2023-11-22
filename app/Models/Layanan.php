@@ -18,6 +18,7 @@ class Layanan extends Model
         'nama',
         'foto',
         'harga',
+        'durasi',
         'deskripsi',
     ];
 

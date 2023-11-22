@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
+use function Laravel\Prompts\error;
+
 class ManajemenKatalogController extends Controller
 {
     public function getPreviewMua()
@@ -112,8 +114,10 @@ class ManajemenKatalogController extends Controller
 
     public function getKatalogJasa()
     {
-        $data = JasaMuaKategori::join('kategori_layanan', 'jasa_mua_kategori.kategori_layanan_id', '=', 'kategori_layanan.id')
-        ->where('jasa_mua_kategori.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
+        $data = Layanan::join('jasa_mua_kategori', 'jasa_mua_kategori.id', '=', 'layanan.jasa_mua_kategori_id')
+        ->join('kategori_layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
+        ->where('layanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
+        ->select('layanan.id', 'kategori_layanan.nama', 'kategori_layanan.foto')
         ->get();
         
         foreach ($data as $key => $value) {
@@ -129,9 +133,10 @@ class ManajemenKatalogController extends Controller
 
     public function getPreviewKatalog($id)
     {
-        $data = JasaMuaKategori::join('kategori_layanan', 'jasa_mua_kategori.kategori_layanan_id', '=', 'kategori_layanan.id')
-        ->join('layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
-        ->where('layanan.jasa_mua_kategori_id', $id)
+        $data = Layanan::join('jasa_mua_kategori', 'jasa_mua_kategori.id', '=', 'layanan.jasa_mua_kategori_id')
+        ->join('kategori_layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
+        ->where('layanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
+        ->where('layanan.id', '=', $id)
         ->select('layanan.id', 'kategori_layanan.foto', 'kategori_layanan.nama', 'layanan.durasi', 'layanan.harga')
         ->first();
         
@@ -139,14 +144,14 @@ class ManajemenKatalogController extends Controller
         
         return response()->json([
             'success' => true,
-            'message' => 'Berhasil preview jasa',
+            'message' => 'Berhasil preview katalog jasa',
             'data' => $data
         ]);
     }
 
     public function updateKatalogJasa(Request $request)
     {
-        $data = Layanan::where('id', $request->id)->update([
+        $data = Layanan::where('layanan.id', $request->id)->update([
             'harga'=>$request->harga,
             'durasi'=>$request->durasi,
         ]);
@@ -160,14 +165,30 @@ class ManajemenKatalogController extends Controller
 
     public function deleteKatalogJasa($id)
     {
-        $data = Layanan::where('id', $id)->first();
-        $data->delete();
 
+        DB::beginTransaction();
+
+        try {
+            $data_layanan = Layanan::where('id', $id)->first();
+        $data_jasamuakategori = JasaMuaKategori::where('id', $data_layanan->jasa_mua_kategori_id)->first();
+        $data_layanan->delete();
+        $data_jasamuakategori->delete();
+
+        DB::commit();
+        
         return response()->json([
-            'success' => true,
-            'message' => 'Berhasil edit katalog jasa',
-            'data' => $data
+            'status' => true,
+            'message' => 'Berhasil hapus katalog jasa',
+            'datalayanan' => $data_layanan,
+            'datajasamuakategori' => $data_jasamuakategori,
         ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal hapus katalog jasa',
+            ]);
+        }
     }
 
     public function getKategoriLayanan()
