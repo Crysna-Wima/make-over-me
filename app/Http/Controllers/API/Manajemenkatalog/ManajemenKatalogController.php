@@ -117,11 +117,11 @@ class ManajemenKatalogController extends Controller
         $data = Layanan::join('jasa_mua_kategori', 'jasa_mua_kategori.id', '=', 'layanan.jasa_mua_kategori_id')
         ->join('kategori_layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
         ->where('layanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
-        ->select('layanan.id', 'kategori_layanan.nama', 'kategori_layanan.foto')
+        ->select('layanan.id', 'kategori_layanan.nama', 'layanan.foto')
         ->get();
         
         foreach ($data as $key => $value) {
-            $data[$key]->foto = url('jasa/' . $value->foto);
+            $data[$key]->foto = url('file/'. auth()->user()->penyedia_jasa_mua->user_id . '_' . auth()->user()->penyedia_jasa_mua->nama . '/layanan/' .$data[$key]->foto);
         }
 
         return response()->json([
@@ -137,10 +137,10 @@ class ManajemenKatalogController extends Controller
         ->join('kategori_layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
         ->where('layanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
         ->where('layanan.id', '=', $id)
-        ->select('layanan.id', 'kategori_layanan.foto', 'kategori_layanan.nama', 'layanan.durasi', 'layanan.harga')
+        ->select('layanan.id', 'layanan.foto', 'kategori_layanan.nama', 'layanan.durasi', 'layanan.harga')
         ->first();
         
-        $data->foto = url('jasa/' . $data->foto);
+        $data->foto = url('file/'. auth()->user()->penyedia_jasa_mua->user_id . '_' . auth()->user()->penyedia_jasa_mua->nama . '/layanan/' .$data->foto);
         
         return response()->json([
             'success' => true,
@@ -173,6 +173,7 @@ class ManajemenKatalogController extends Controller
         $data_jasamuakategori = JasaMuaKategori::where('id', $data_layanan->jasa_mua_kategori_id)->first();
         $data_layanan->delete();
         $data_jasamuakategori->delete();
+        unlink('file/'. auth()->user()->penyedia_jasa_mua->user_id . '_' . auth()->user()->penyedia_jasa_mua->nama . '/layanan/' .$data_layanan->foto);
 
         DB::commit();
         

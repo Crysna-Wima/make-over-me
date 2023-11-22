@@ -30,18 +30,23 @@ class DashboardMuaController extends Controller
 
     public function getLayananMua()
     {
-        $data = Layanan::join('detail_pemesanan', 'layanan.id', '=', 'detail_pemesanan.layanan_id')
-    ->join('ulasan', 'detail_pemesanan.pemesanan_id', '=', 'ulasan.pemesanan_id')
-    ->join('penyedia_jasa_mua', 'layanan.penyedia_jasa_mua_id', '=', 'penyedia_jasa_mua.id')
-    ->select('penyedia_jasa_mua.user_id', 'penyedia_jasa_mua.nama as nama_mua', 'layanan.id', 'layanan.nama', 'layanan.harga', 'layanan.foto', 'layanan.deskripsi', DB::raw('AVG(ulasan.rating) as rating'))
-    ->groupBy('penyedia_jasa_mua.user_id', 'penyedia_jasa_mua.nama','layanan.id', 'layanan.nama', 'layanan.harga', 'layanan.foto', 'layanan.deskripsi')
-    ->orderByRaw('rating DESC')
-    ->limit(4)
-    ->get();
-
+        $data = Layanan::
+        // ->join('ulasan', 'detail_pemesanan.pemesanan_id', '=', 'ulasan.pemesanan_id')
+        join('penyedia_jasa_mua', 'layanan.penyedia_jasa_mua_id', '=', 'penyedia_jasa_mua.id')
+        ->where('layanan.penyedia_jasa_mua_id', '=', auth()->user()->penyedia_jasa_mua->id)
+        ->select('penyedia_jasa_mua.user_id', 'penyedia_jasa_mua.nama as nama_mua', 'layanan.id', 'layanan.nama', 'layanan.harga', 'layanan.foto', 'layanan.deskripsi')
+        ->groupBy('penyedia_jasa_mua.user_id', 'penyedia_jasa_mua.nama','layanan.id', 'layanan.nama', 'layanan.harga', 'layanan.foto', 'layanan.deskripsi')
+        // ->orderByRaw('rating DESC')
+        ->limit(4)
+        ->get();
     
         foreach ($data as $key => $value) {
             $data[$key]->foto = url('/file/' . $value->user_id.'_'. $value->nama_mua . '/layanan/' . $value->foto);
+            // cek jika ada ulasan
+            $data[$key]->ulasan = DB::table('detail_pemesanan')
+                ->join('ulasan', 'detail_pemesanan.pemesanan_id', '=', 'ulasan.pemesanan_id')
+                ->where('detail_pemesanan.layanan_id', $value->id)
+                ->avg('ulasan.rating');
         }
     
         return response()->json([
