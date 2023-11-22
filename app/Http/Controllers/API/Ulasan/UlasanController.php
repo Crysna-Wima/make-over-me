@@ -19,7 +19,7 @@ class UlasanController extends Controller
         ->join('pencari_jasa_mua', 'pencari_jasa_mua.id', '=', 'pemesanan.pencari_jasa_mua_id')
         ->join('penyedia_jasa_mua', 'penyedia_jasa_mua.id', '=', 'layanan.penyedia_jasa_mua_id')
         ->leftJoin('galeri_pembeli', 'galeri_pembeli.ulasan_id', '=', 'ulasan.id') // Left join to include cases where there's no galeri_pembeli entry
-        ->where('layanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
+        ->where('pemesanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
         ->where('pemesanan.status', '=', 'done')
         ->select('pemesanan.id', 'pemesanan.tanggal_pemesanan', 'pencari_jasa_mua.nama as nama', 'pencari_jasa_mua.foto as foto', 'galeri_pembeli.foto as foto_ulasan', 'ulasan.rating', 'ulasan.komentar', 'layanan.nama as nama_layanan', 'pencari_jasa_mua.user_id', 'penyedia_jasa_mua.user_id as user_id_mua', 'penyedia_jasa_mua.nama as nama_mua')
         ->get();
@@ -71,7 +71,7 @@ class UlasanController extends Controller
         ->join('pencari_jasa_mua', 'pencari_jasa_mua.id', '=', 'pemesanan.pencari_jasa_mua_id')
         ->join('penyedia_jasa_mua', 'penyedia_jasa_mua.id', '=', 'layanan.penyedia_jasa_mua_id')
         ->leftJoin('galeri_pembeli', 'galeri_pembeli.ulasan_id', '=', 'ulasan.id') // Left join to include cases where there's no galeri_pembeli entry
-        ->where('layanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
+        ->where('pemesanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
         ->where('pemesanan.status', '=', 'done')
         ->select('pemesanan.id', 'pencari_jasa_mua.user_id', 'pencari_jasa_mua.nama as nama', 'pemesanan.tanggal_pemesanan', 'layanan.nama as nama_layanan', 'ulasan.rating', 'ulasan.komentar', 'galeri_pembeli.foto as foto_ulasan', 'penyedia_jasa_mua.user_id as user_id_mua', 'penyedia_jasa_mua.nama as nama_mua')
         ->get();
