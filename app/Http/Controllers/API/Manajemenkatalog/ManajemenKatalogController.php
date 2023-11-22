@@ -146,11 +146,22 @@ class ManajemenKatalogController extends Controller
 
     public function updateKatalogJasa(Request $request)
     {
-
         $data = Layanan::where('id', $request->id)->update([
             'harga'=>$request->harga,
             'durasi'=>$request->durasi,
         ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil edit katalog jasa',
+            'data' => $data
+        ]);
+    }
+
+    public function deleteKatalogJasa($id)
+    {
+        $data = Layanan::wherewhere('id', $id)->first();
+        $data->delete();
 
         return response()->json([
             'success' => true,
