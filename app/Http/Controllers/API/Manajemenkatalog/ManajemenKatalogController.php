@@ -160,7 +160,7 @@ class ManajemenKatalogController extends Controller
 
     public function deleteKatalogJasa($id)
     {
-        $data = Layanan::wherewhere('id', $id)->first();
+        $data = Layanan::where('id', $id)->first();
         $data->delete();
 
         return response()->json([
