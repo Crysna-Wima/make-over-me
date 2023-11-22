@@ -91,9 +91,10 @@ class DetailJasaMuaController extends Controller
             ->join('kategori_layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
             ->join('penyedia_jasa_mua', 'penyedia_jasa_mua.id', '=', 'pemesanan.penyedia_jasa_mua_id')
             ->join('pencari_jasa_mua', 'pencari_jasa_mua.id', '=', 'pemesanan.pencari_jasa_mua_id')
+            ->join('kecamatan', 'kecamatan.id', '=', 'penyedia_jasa_mua.lokasi_jasa_mua')
             ->where('pemesanan.penyedia_jasa_mua_id', $id)
             ->where('pemesanan.status', 'done')
-            ->select('pemesanan.id as id', 'pencari_jasa_mua.foto as foto', 'pemesanan.tanggal_pemesanan as tanggal_pemesanan', 'kategori_layanan.nama as nama_kategori', 'ulasan.id as ulasan_id', 'ulasan.rating as rating', 'penyedia_jasa_mua.nama as nama_mua', 'penyedia_jasa_mua.user_id as user_id')
+            ->select('pemesanan.id as id', 'pencari_jasa_mua.foto as foto', 'pemesanan.tanggal_pemesanan as tanggal_pemesanan', 'kategori_layanan.nama as nama_kategori', 'ulasan.id as ulasan_id', 'ulasan.rating as rating', 'penyedia_jasa_mua.nama as nama_mua','kecamatan.nama_kecamatan as lokasi', 'penyedia_jasa_mua.user_id as user_id')
             ->orderBy('pemesanan.tanggal_pemesanan', 'desc')
             ->limit(3)
             ->get();
