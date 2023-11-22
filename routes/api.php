@@ -63,6 +63,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/pencari-jasa-mua/register', 'API\Register\RegisterClientController@register');
     // Route dashboard pencari jasa mua
     Route::get('/pencari-jasa-mua/dashboard/{limit?}', 'API\Dashboard\DashboardClientController@index');
+    // Route get all layanan mua
+    Route::get('/pencari-jasa-mua/layanan-mua', 'API\Layanan\LayananController@getAllLayananMua');
     //route search mua
     Route::post('/pencari-jasa-mua/search-mua', 'API\Dashboard\DashboardClientController@searchMua');
     // route detail mua

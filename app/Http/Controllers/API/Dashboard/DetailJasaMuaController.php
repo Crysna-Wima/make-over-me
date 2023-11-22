@@ -21,9 +21,30 @@ class DetailJasaMuaController extends Controller
         $mua = PenyediaJasaMua::where('id', $id)->first();
         $galeri = GaleriPenjual::where('penyedia_jasa_mua_id', $id)->get();
 
-        foreach ($galeri as $key => $value) {
-            $galeri[$key]->foto = url('file/' . $mua->user_id . "_" . $mua->nama . '/galeri_penjual/' . $value->foto);
+        // Mengelompokkan galeri berdasarkan penyedia_jasa_mua_id
+        $groupedGaleri = $galeri->groupBy('penyedia_jasa_mua_id');
+
+        // Membuat hasil akhir
+        $result = [];
+
+        foreach ($groupedGaleri as $penyediaId => $galeriCollection) {
+            $firstGaleri = $galeriCollection->first(); // Mengambil data pertama sebagai representasi
+
+            // Mengganti URL foto dengan URL yang baru
+            $fotoUrls = $galeriCollection->pluck('foto')->map(function ($foto) use ($mua) {
+                return url('file/' . $mua->user_id . "_" . $mua->nama . '/galeri_penjual/' . $foto);
+            })->toArray();
+
+            $result[] = [
+                'id' => $firstGaleri->id,
+                'penyedia_jasa_mua_id' => $firstGaleri->penyedia_jasa_mua_id,
+                'foto' => $fotoUrls,
+                'deskripsi' => $firstGaleri->deskripsi,
+                'created_at' => $firstGaleri->created_at,
+                'updated_at' => $firstGaleri->updated_at,
+            ];
         }
+        
 
         // profil penyedia jasa mua
         $profil = PenyediaJasaMua::where('penyedia_jasa_mua.id', $id)
@@ -94,7 +115,7 @@ class DetailJasaMuaController extends Controller
             ->join('kecamatan', 'kecamatan.id', '=', 'penyedia_jasa_mua.lokasi_jasa_mua')
             ->where('pemesanan.penyedia_jasa_mua_id', $id)
             ->where('pemesanan.status', 'done')
-            ->select('pemesanan.id as id', 'pencari_jasa_mua.foto as foto', 'pemesanan.tanggal_pemesanan as tanggal_pemesanan', 'kategori_layanan.nama as nama_kategori', 'ulasan.id as ulasan_id', 'ulasan.rating as rating', 'penyedia_jasa_mua.nama as nama_mua','kecamatan.nama_kecamatan as lokasi', 'penyedia_jasa_mua.user_id as user_id')
+            ->select('pemesanan.id as id', 'pencari_jasa_mua.foto as foto', 'pemesanan.tanggal_pemesanan as tanggal_pemesanan', 'kategori_layanan.nama as nama_kategori', 'ulasan.id as ulasan_id', 'ulasan.rating as rating', 'ulasan.ulasan as ulasan', 'penyedia_jasa_mua.nama as nama_mua', 'penyedia_jasa_mua.user_id as user_id')
             ->orderBy('pemesanan.tanggal_pemesanan', 'desc')
             ->limit(3)
             ->get();
@@ -136,7 +157,7 @@ class DetailJasaMuaController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => [
-                'galeri' => $galeri,
+                'galeri' => $result,  // Correct variable name
                 'profil' => $profil,
                 'rating' => $rating,
                 'harga' => $harga,

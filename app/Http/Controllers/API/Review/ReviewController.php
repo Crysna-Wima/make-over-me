@@ -31,18 +31,29 @@ class ReviewController extends Controller
         DB::beginTransaction();
         try {
             $pemesanan = Pemesanan::where('id', $request->pemesanan_id)->first();
-            if ($pemesanan->status != 'accept' && $pemesanan->tanggal_pemesanan < date('Y-m-d')) {
+            if($pemesanan->status == 'done'){
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Pemesanan sudah direview',
+                ]);
+            }
+
+            if ($pemesanan->tanggal_pemesanan > date('Y-m-d')) {
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'Pemesanan belum selesai',
                 ]);
             }
+            
             $review = Ulasan::create([
                 'pemesanan_id' => $request->pemesanan_id,
                 'rating' => $request->rating,
                 'komentar' => $request->ulasan,
                 'tanggal' => date('Y-m-d'),
             ]);
+
+            $pemesanan->status = 'done';
+            $pemesanan->save();
 
             foreach ($request->gambar as $file) {
                 $directory = 'file/' . auth()->user()->id . "_" . auth()->user()->penyedia_jasa_mua->nama . '/review/';
