@@ -15,7 +15,7 @@ class DashboardMuaController extends Controller
     {
         $data = PenyediaJasaMua::where('user_id', auth()->user()->id)
             ->leftJoin('kecamatan', 'penyedia_jasa_mua.lokasi_jasa_mua', '=', 'kecamatan.id')
-            ->select('penyedia_jasa_mua.nama_jasa_mua','penyedia_jasa_mua.nama', 'kecamatan.nama_kecamatan as lokasi_jasa_mua', 'penyedia_jasa_mua.foto')
+            ->select('penyedia_jasa_mua.nama_jasa_mua','penyedia_jasa_mua.nama', 'penyedia_jasa_mua.nomor_telepon', 'penyedia_jasa_mua.tanggal_lahir', 'penyedia_jasa_mua.gender', 'kecamatan.nama_kecamatan as lokasi_jasa_mua', 'penyedia_jasa_mua.foto')
             ->first();
     
         $data->lokasi_jasa_mua = $data->lokasi_jasa_mua. ', Surabaya';
