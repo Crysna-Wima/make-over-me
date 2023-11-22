@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Review;
 use App\Http\Controllers\Controller;
 use App\Models\GaleriPembeli;
 use App\Models\Pemesanan;
+use App\Models\PenyediaJasaMua;
 use App\Models\Ulasan;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -55,8 +56,9 @@ class ReviewController extends Controller
             $pemesanan->status = 'done';
             $pemesanan->save();
 
+            $mua = PenyediaJasaMua::where('id', $pemesanan->penyedia_jasa_mua_id)->first();
             foreach ($request->gambar as $file) {
-                $directory = 'file/' . auth()->user()->id . "_" . auth()->user()->penyedia_jasa_mua->nama . '/review/';
+                $directory = 'file/' . $mua->user_id . "_" . $mua->nama . '/review/';
                 if (!file_exists($directory)) {
                     mkdir($directory, 0777, true);
                 }

@@ -147,7 +147,7 @@ class DashboardMuaController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Berhasil mendapatkan ulasan',
-            'data' => $groupedData
+            'data' => $groupedData,
         ]);
     }
     
