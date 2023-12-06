@@ -19,6 +19,7 @@ class Layanan extends Model
         'foto',
         'harga',
         'deskripsi',
+        'durasi'
     ];
 
     // one to one relationship dengan jasa_mua_kategori
@@ -44,7 +45,8 @@ class Layanan extends Model
             ->groupBy('layanan.id', 'layanan.nama', 'layanan.foto', 'layanan.harga', 'layanan.deskripsi', 'penyedia_jasa_mua.nama_jasa_mua', 'kecamatan.nama_kecamatan', 'penyedia_jasa_mua.nama', 'users.id', 'penyedia_jasa_mua.id')
             ->orderByRaw('COUNT(detail_pemesanan.id) DESC, AVG(ulasan.rating) DESC')
             ->limit($limit)
-            ->get();
+            ->get()
+            ->unique('id_mua');
     }
 
     public static function layananTerdekat($lokasi, $limit)
@@ -59,8 +61,8 @@ class Layanan extends Model
         ->groupBy('layanan.id', 'layanan.nama', 'layanan.foto', 'layanan.harga', 'layanan.deskripsi', 'penyedia_jasa_mua.nama_jasa_mua', 'kecamatan.nama_kecamatan', 'penyedia_jasa_mua.nama', 'users.id', 'penyedia_jasa_mua.id')
         ->orderByRaw('COUNT(detail_pemesanan.id) DESC, AVG(ulasan.rating) DESC')
         ->limit($limit)
-        ->get();
-
+        ->get()
+        ->unique('id_mua');
     }
 
     

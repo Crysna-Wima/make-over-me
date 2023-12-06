@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
+use function Laravel\Prompts\error;
+
 class ManajemenKatalogController extends Controller
 {
     public function getPreviewMua()
@@ -19,8 +21,21 @@ class ManajemenKatalogController extends Controller
         $data = GaleriPenjual::where('penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
             ->get();
 
-        foreach ($data as $key => $value) {
-            $data[$key]->foto = url('file/' . auth()->user()->id . "_" . auth()->user()->penyedia_jasa_mua->nama . '/galeri_penjual/' . $value->foto);
+        if($data->isEmpty()){
+            $data = [
+                'id' => 0, // id 0 untuk menandakan bahwa data kosong, sehingga bisa dihandle di frontend dengan menampilkan foto default 'banner.jpeg
+                'penyedia_jasa_mua_id' => auth()->user()->penyedia_jasa_mua->id,
+                'foto' => url('default/banner.jpeg'),
+                'deskripsi' => 'foto default',
+                'created_at' => '',
+                'updated_at' => '',
+            ];
+	
+          $data = [$data];
+        } else {
+            foreach ($data as $key => $value) {
+                $data[$key]->foto = url('file/' . auth()->user()->id . '/galeri_penjual/' . $value->foto);
+            }
         }
 
 
@@ -44,7 +59,7 @@ class ManajemenKatalogController extends Controller
         DB::beginTransaction();
 
         try {
-            $directory = 'file/' . auth()->user()->id . "_" . auth()->user()->penyedia_jasa_mua->nama . '/galeri_penjual/';
+            $directory = 'file/' . auth()->user()->id . '/galeri_penjual/';
             if (!file_exists($directory)) {
                 mkdir($directory, 0777, true);
             }
@@ -100,7 +115,7 @@ class ManajemenKatalogController extends Controller
     public function deletePreviewMua($id)
     {
         $data = GaleriPenjual::where('id', $id)->first();
-        unlink('file/' . auth()->user()->id . "_" . auth()->user()->penyedia_jasa_mua->nama . '/galeri_penjual/' . $data->foto);
+        // unlink('file/' . auth()->user()->id . '/galeri_penjual/' . $data->foto);
         $data->delete();
 
         return response()->json([
@@ -112,12 +127,14 @@ class ManajemenKatalogController extends Controller
 
     public function getKatalogJasa()
     {
-        $data = JasaMuaKategori::join('kategori_layanan', 'jasa_mua_kategori.kategori_layanan_id', '=', 'kategori_layanan.id')
-        ->where('jasa_mua_kategori.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
+        $data = Layanan::join('jasa_mua_kategori', 'jasa_mua_kategori.id', '=', 'layanan.jasa_mua_kategori_id')
+        ->join('kategori_layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
+        ->where('layanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
+        ->select('layanan.id', 'kategori_layanan.nama', 'layanan.foto')
         ->get();
         
         foreach ($data as $key => $value) {
-            $data[$key]->foto = url('jasa/' . $value->foto);
+            $data[$key]->foto = url('file/'. auth()->user()->penyedia_jasa_mua->user_id . '/layanan/' .$data[$key]->foto);
         }
 
         return response()->json([
@@ -129,25 +146,25 @@ class ManajemenKatalogController extends Controller
 
     public function getPreviewKatalog($id)
     {
-        $data = JasaMuaKategori::join('kategori_layanan', 'jasa_mua_kategori.kategori_layanan_id', '=', 'kategori_layanan.id')
-        ->join('layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
-        ->where('layanan.jasa_mua_kategori_id', $id)
-        ->select('layanan.id', 'kategori_layanan.foto', 'kategori_layanan.nama', 'layanan.durasi', 'layanan.harga')
+        $data = Layanan::join('jasa_mua_kategori', 'jasa_mua_kategori.id', '=', 'layanan.jasa_mua_kategori_id')
+        ->join('kategori_layanan', 'kategori_layanan.id', '=', 'layanan.kategori_layanan_id')
+        ->where('layanan.penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
+        ->where('layanan.id', '=', $id)
+        ->select('layanan.id', 'layanan.foto', 'kategori_layanan.nama', 'layanan.durasi', 'layanan.harga')
         ->first();
         
-        $data->foto = url('jasa/' . $data->foto);
+        $data->foto = url('file/'. auth()->user()->penyedia_jasa_mua->user_id . '_' . auth()->user()->penyedia_jasa_mua->nama . '/layanan/' .$data->foto);
         
         return response()->json([
             'success' => true,
-            'message' => 'Berhasil preview jasa',
+            'message' => 'Berhasil preview katalog jasa',
             'data' => $data
         ]);
     }
 
     public function updateKatalogJasa(Request $request)
     {
-
-        $data = Layanan::where('id', $request->id)->update([
+        $data = Layanan::where('layanan.id', $request->id)->update([
             'harga'=>$request->harga,
             'durasi'=>$request->durasi,
         ]);
@@ -157,6 +174,35 @@ class ManajemenKatalogController extends Controller
             'message' => 'Berhasil edit katalog jasa',
             'data' => $data
         ]);
+    }
+
+    public function deleteKatalogJasa($id)
+    {
+
+        DB::beginTransaction();
+
+        try {
+            $data_layanan = Layanan::where('id', $id)->first();
+        $data_jasamuakategori = JasaMuaKategori::where('id', $data_layanan->jasa_mua_kategori_id)->first();
+        $data_layanan->delete();
+        $data_jasamuakategori->delete();
+        unlink('file/'. auth()->user()->penyedia_jasa_mua->user_id . '_' . auth()->user()->penyedia_jasa_mua->nama . '/layanan/' .$data_layanan->foto);
+
+        DB::commit();
+        
+        return response()->json([
+            'status' => true,
+            'message' => 'Berhasil hapus katalog jasa',
+            'datalayanan' => $data_layanan,
+            'datajasamuakategori' => $data_jasamuakategori,
+        ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal hapus katalog jasa',
+            ]);
+        }
     }
 
     public function getKategoriLayanan()
@@ -181,6 +227,18 @@ class ManajemenKatalogController extends Controller
         if ($validator->fails()) {
             return response()->json(['status' => false, 'message' => $validator->errors()], 422);
         }
+        
+        // jika kategori layanan sudah ada dengan penyedia jasa mua yang sama
+        // $cek = JasaMuaKategori::where('penyedia_jasa_mua_id', auth()->user()->penyedia_jasa_mua->id)
+        //     ->where('kategori_layanan_id', $request->kategori_layanan_id)
+        //     ->first();
+        
+        // if ($cek) {
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => 'Gagal Menambahkan Katalog Jasa, Katalog Jasa Sudah Ada',
+        //     ], 400);
+        // }
 
         DB::beginTransaction();
 
@@ -190,7 +248,7 @@ class ManajemenKatalogController extends Controller
                 'kategori_layanan_id' => $request->kategori_layanan_id,
             ]);
 
-            $directory = 'file/' . auth()->user()->id . "_" . auth()->user()->penyedia_jasa_mua->nama . '/layanan/';
+            $directory = 'file/' . auth()->user()->id . '/layanan/';
             if (!file_exists($directory)) {
                 mkdir($directory, 0777, true);
             }
