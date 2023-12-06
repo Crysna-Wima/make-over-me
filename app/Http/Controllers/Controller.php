@@ -146,4 +146,15 @@ function getKecamatanByWilayah($wilayah)
     return $kecamatan;
 }
 
+function changeHaritoBahasa($hari)
+{
+    $hari = str_replace('Monday', 'Senin', $hari);
+    $hari = str_replace('Tuesday', 'Selasa', $hari);
+    $hari = str_replace('Wednesday', 'Rabu', $hari);
+    $hari = str_replace('Thursday', 'Kamis', $hari);
+    $hari = str_replace('Friday', 'Jumat', $hari);
+    $hari = str_replace('Saturday', 'Sabtu', $hari);
+    $hari = str_replace('Sunday', 'Minggu', $hari);
+    return $hari;
+}
 }

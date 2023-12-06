@@ -33,23 +33,6 @@ class AuthController extends Controller
                 'password' => bcrypt($request->password),
                 'role_id' => $request->role_id,
             ]);
-
-            if ($user->role_id == 3) {
-                $pencariJasaMua = PencariJasaMua::where('user_id', $user->id)->first();
-                if (!$pencariJasaMua) {
-                    $faker = FakerFactory::create();
-                    $pencariJasaMua = PencariJasaMua::create([
-                        'nama' => explode('@', $user->email)[0],
-                        'tanggal_lahir' =>  date('Y-m-d', strtotime('-18 years', strtotime(date('Y-m-d')))),
-                        'gender' => $faker->randomElement(['L', 'P']),
-                        'alamat' => $faker->randomElement(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']),
-                        'nomor_telepon' => $faker->randomElement(['081', '082', '083', '085', '087', '089']) . $faker->randomNumber(8),
-                        'foto' => $this->uploadBase64Foto($this->generateDefaultAvatar(), $user->id, explode('@', $user->email)[0]),
-                        'user_id' => $user->id
-                    ]);
-                }
-            }
-
             return $this->getResponse(true, 'User created successfully', $user, $user->createToken('Personal Access Token')->plainTextToken, 201);
         } catch (\Exception $e) {
             return $this->getResponse(false, $e->getMessage(), 500);
@@ -75,42 +58,26 @@ class AuthController extends Controller
     
         if ($user->role_id == 2) {
             $penyediaJasaMua = PenyediaJasaMua::where('user_id', $user->id)->first();
-            if ($penyediaJasaMua->status == 0) {
-                return $this->getResponse(false, 'Akun anda belum aktif, silahkan hubungi admin', 401);
+            // jika penyedia jasa mua kosong
+            if (!$penyediaJasaMua) {
+                return $this->getResponse(false, 'Akun anda belum menyelesaikan pendaftaran silahkan hubungi admin', 401);
+            } else {
+                if ($penyediaJasaMua->status == 0) {
+                    return $this->getResponse(false, 'Akun anda belum aktif, silahkan hubungi admin', 401);
+                }
+                
+                return $this->formatPenyediaJasaMuaData($user);
             }
-        }
-    
-        if ($user->role_id == 3) {
+        } else if ($user->role_id == 3){
             $pencariJasaMua = PencariJasaMua::where('user_id', $user->id)->first();
+            // jika pencari jasa mua kosong
             if (!$pencariJasaMua) {
-                $faker = FakerFactory::create();
-                $pencariJasaMua = PencariJasaMua::create([
-                    'nama' => explode('@', $user->email)[0],
-                    'tanggal_lahir' =>  date('Y-m-d', strtotime('-18 years', strtotime(date('Y-m-d')))),
-                    'gender' => $faker->randomElement(['L', 'P']),
-                    'alamat' => $faker->randomElement(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']),
-                    'nomor_telepon' => $faker->randomElement(['081', '082', '083', '085', '087', '089']) . $faker->randomNumber(8),
-                    'foto' => $this->uploadBase64Foto($this->generateDefaultAvatar(), $user->id, explode('@', $user->email)[0]),
-                    'user_id' => $user->id
-                ]);
+                return $this->getResponse(false, 'Akun anda belum menyelesaikan pendaftaran silahkan hubungi admin', 401);
+            } else {
+                return $this->formatPencariJasaMuaData($user);    
             }
-            return $this->formatPencariJasaMuaData($user);
-        } elseif ($user->role_id == 2) {
-            return $this->formatPenyediaJasaMuaData($user);
-        }
-    }
-
-    private function generateDefaultAvatar()
-    {
-        // Path ke gambar avatar default (gantilah dengan path yang sesuai)
-        $avatarPath = public_path('default/default.jpg');
-    
-        // Baca file gambar dan konversi ke base64
-        if (file_exists($avatarPath)) {
-            $imageData = file_get_contents($avatarPath);
-            return base64_encode($imageData);
         } else {
-            return base64_encode(file_get_contents('https://via.placeholder.com/150'));
+            return $this->getResponse(false, 'Invalid credentials', 401);
         }
     }
 

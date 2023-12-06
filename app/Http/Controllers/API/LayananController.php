@@ -36,7 +36,7 @@ class LayananController extends Controller
             'penyedia_jasa_mua_id' => auth()->user()->penyediaJasaMua->id
         ]);
     
-        $layanan->foto = url('file/' . auth()->user()->id . "_" . auth()->user()->penyediaJasaMua->nama . '/layanan/' . $layanan->foto);
+        $layanan->foto = url('file/' . auth()->user()->id . '/layanan/' . $layanan->foto);
     
         return response()->json([
             'success' => true,
@@ -47,7 +47,7 @@ class LayananController extends Controller
     
     private function processAndSaveImage($base64Image, $userId, $namaJasaMua) {
         // Define the directory path
-        $directory = 'file/' . $userId . "_" . $namaJasaMua . '/layanan/';
+        $directory = 'file/' . $userId . '/layanan/';
     
         // Check if the directory exists; if not, create it.
         if (!file_exists($directory)) {

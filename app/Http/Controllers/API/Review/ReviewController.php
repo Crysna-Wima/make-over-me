@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Review;
 use App\Http\Controllers\Controller;
 use App\Models\GaleriPembeli;
 use App\Models\Pemesanan;
+use App\Models\PenyediaJasaMua;
 use App\Models\Ulasan;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -55,8 +56,11 @@ class ReviewController extends Controller
             $pemesanan->status = 'done';
             $pemesanan->save();
 
+            $penyedia_jasa_mua = PenyediaJasaMua::where('id', $pemesanan->penyedia_jasa_mua_id)->first();
+
+            
             foreach ($request->gambar as $file) {
-                $directory = 'file/' . auth()->user()->id . "_" . auth()->user()->penyedia_jasa_mua->nama . '/review/';
+                $directory = 'file/' . $penyedia_jasa_mua->user_id  . '/review/';
                 if (!file_exists($directory)) {
                     mkdir($directory, 0777, true);
                 }
@@ -111,13 +115,14 @@ class ReviewController extends Controller
             ->join('detail_pemesanan', 'pemesanan.id', '=', 'detail_pemesanan.pemesanan_id')
             ->join('layanan', 'detail_pemesanan.layanan_id', '=', 'layanan.id')
             ->join('kategori_layanan', 'layanan.kategori_layanan_id', '=', 'kategori_layanan.id')
-            ->select('pemesanan.nama_pemesan', 'pemesanan.tanggal_pemesanan', 'kategori_layanan.nama as kategori', 'ulasan.rating', 'ulasan.komentar', 'galeri_pembeli.foto')
+            ->join('penyedia_jasa_mua', 'pemesanan.penyedia_jasa_mua_id', '=', 'penyedia_jasa_mua.id')
+            ->select('pemesanan.nama_pemesan', 'pemesanan.tanggal_pemesanan', 'kategori_layanan.nama as kategori', 'ulasan.rating', 'ulasan.komentar', 'galeri_pembeli.foto', 'penyedia_jasa_mua.nama as nama_mua', 'penyedia_jasa_mua.user_id as id_mua')
             ->get();
 
         $groupedReviews = [];
 
         foreach ($reviews as $key => $value) {
-            $value->foto = url('file/' . auth()->user()->id . "_" . auth()->user()->penyedia_jasa_mua->nama . '/review/' . $value->foto);
+            $value->foto = url('file/' . $value->id_mua . '/review/' . $value->foto);
 
             // Mengelompokkan berdasarkan kategori
             if (!isset($groupedReviews[$value->kategori])) {

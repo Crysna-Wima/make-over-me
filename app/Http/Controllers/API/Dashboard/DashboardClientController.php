@@ -27,9 +27,20 @@ class DashboardClientController extends Controller
             ->where('tanggal_selesai', '>=', date('Y-m-d H:i:s'))
             ->where('status', 'aktif')
             ->get();
-
-        foreach ($banner as $key => $value) {
-            $value->gambar = url('/banner/' . $value->gambar);
+        
+        
+        //jika tidak ada banner aktif, tambahkan banner default
+        if ($banner->isEmpty()) {
+            $banner = [
+                (object) [
+                    'gambar' => url('/banner/banner0.jpg'),
+                    'link' => 'https://www.google.com',
+                ],
+            ];
+        } else {
+            foreach ($banner as $key => $value) {
+                $value->gambar = url('/banner/' . $value->gambar);
+            }
         }
 
         // get kategori
@@ -71,24 +82,22 @@ class DashboardClientController extends Controller
                         'nama' => $item['nama'],
                     ];
                 }),
-                'layanan_populer' => $layananPopuler->map(function ($item) {
-                    return [
-                        'id' => $item['id_mua'],
-                        'nama' => $item['nama_jasa_mua'],
-                        'foto' => $item['foto'],
-                        'lokasi' => $item['nama_kecamatan'] . ', Surabaya',
-                    ];
-                }),
-                'layanan_terdekat' => $layananTerdekat->map(function ($item) {
-                    return [
-                        'id' => $item['id_mua'],
-                        'nama' => $item['nama_jasa_mua'],
-                        'foto' => $item['foto'],
-                        'lokasi' => $item['nama_kecamatan'] . ', Surabaya',
-                    ];
-                }),
+                'layanan_populer' => $this->formatLayananData($layananPopuler),
+                'layanan_terdekat' => $this->formatLayananData($layananTerdekat),
             ]
         ]);
+    }
+    
+    private function formatLayananData($layananData): array
+    {
+        return array_values($layananData->map(function ($item) {
+            return [
+                'id' => $item['id_mua'],
+                'nama' => $item['nama_jasa_mua'],
+                'foto' => $item['foto'],
+                'lokasi' => $item['nama_kecamatan'] . ', Surabaya',
+            ];
+        })->toArray());
     }
 
     public function searchMua(Request $request)
@@ -99,7 +108,7 @@ class DashboardClientController extends Controller
         $harga_max = $request->input('harga_max');
 
         // Start with an empty query
-        $muaQuery = PenyediaJasaMua::select('penyedia_jasa_mua.id', 'penyedia_jasa_mua.nama_jasa_mua', 'penyedia_jasa_mua.lokasi_jasa_mua', 'layanan.harga', 'penyedia_jasa_mua.foto', 'penyedia_jasa_mua.nama', 'kategori_layanan.nama as nama_kategori', 'kecamatan.nama_kecamatan', 'penyedia_jasa_mua.user_id')
+        $muaQuery = PenyediaJasaMua::select('penyedia_jasa_mua.id', 'penyedia_jasa_mua.user_id as id_mua', 'penyedia_jasa_mua.nama_jasa_mua', 'penyedia_jasa_mua.lokasi_jasa_mua', 'layanan.harga', 'layanan.foto', 'penyedia_jasa_mua.nama', 'kategori_layanan.nama as nama_kategori', 'kecamatan.nama_kecamatan', 'penyedia_jasa_mua.user_id')
             ->join('jasa_mua_kategori', 'jasa_mua_kategori.penyedia_jasa_mua_id', '=', 'penyedia_jasa_mua.id')
             ->join('kategori_layanan', 'kategori_layanan.id', '=', 'jasa_mua_kategori.kategori_layanan_id')
             ->join('layanan', 'layanan.jasa_mua_kategori_id', '=', 'jasa_mua_kategori.id')
@@ -110,23 +119,25 @@ class DashboardClientController extends Controller
         if ($searchTerms) {
             foreach ($searchTerms as $term) {
                 $term = strtolower($term); // Convert the search term to lowercase
-
+        
                 $muaQuery->where(function ($query) use ($term) {
                     $query->orWhereRaw("LOWER(penyedia_jasa_mua.nama_jasa_mua) LIKE ?", ['%' . $term . '%'])
                         ->orWhereRaw("LOWER(kecamatan.nama_kecamatan) LIKE ?", ['%' . $term . '%'])
                         ->orWhereRaw("LOWER(kategori_layanan.nama) LIKE ?", ['%' . $term . '%']);
-                    $query->orWhere(function ($subQuery) use ($term) {
-                        // Search for prices within a range of +/- 50000
-                        $subQuery->whereBetween('layanan.harga', [(int)$term - 50000, (int)$term + 50000]);
-                    });
+        
+                    // Check if the term is numeric before applying price range condition
+                    if (is_numeric($term)) {
+                        $query->orWhere(function ($subQuery) use ($term) {
+                            // Search for prices within a range of +/- 50000
+                            $subQuery->whereBetween('layanan.harga', [(int)$term - 50000, (int)$term + 50000]);
+                        });
+                    }
                 });
             }
         }
 
-
         if ($wilayah) {
-            $wilayah = $this->getKecamatanByWilayah($wilayah);
-            $muaQuery->whereIn('penyedia_jasa_mua.lokasi_jasa_mua', $wilayah);
+            $muaQuery->where('penyedia_jasa_mua.lokasi_jasa_mua', $wilayah);
         }
 
         if ($harga_min && $harga_max) {
@@ -151,7 +162,7 @@ class DashboardClientController extends Controller
                     'harga' => (int)$mua->harga, // Initialize with the first price
                     'harga_min' => (int)$mua->harga,
                     'harga_max' => (int)$mua->harga,
-                    'foto' => $this->formatFotoUrl($mua),
+                    'foto' => url('/file/' . $mua->id_mua . '/layanan/' . $mua->foto),
                     'jumlah_pemesanan' => 0, // Initialize with 0
                     'ulasan' => 0, // Initialize with 0
                     'nama_kategori' => [], // Initialize the array

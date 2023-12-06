@@ -10,7 +10,10 @@ class LayananController extends Controller
 {
     public function getLayananMua($id)
     {
-        $layanan = Layanan::where('penyedia_jasa_mua_id', $id)->get();
+        $layanan = Layanan::where('layanan.penyedia_jasa_mua_id', $id)
+        ->join('kategori_layanan', 'layanan.kategori_layanan_id', '=', 'kategori_layanan.id')
+        ->select('layanan.id', 'layanan.foto', 'layanan.harga', 'layanan.deskripsi', 'layanan.durasi', 'kategori_layanan.nama as nama')
+        ->get();
 
         return response()->json([
             'status' => 'success',

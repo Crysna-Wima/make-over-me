@@ -32,7 +32,7 @@ class DetailJasaMuaController extends Controller
 
             // Mengganti URL foto dengan URL yang baru
             $fotoUrls = $galeriCollection->pluck('foto')->map(function ($foto) use ($mua) {
-                return url('file/' . $mua->user_id . "_" . $mua->nama . '/galeri_penjual/' . $foto);
+                return url('file/' . $mua->user_id . '/galeri_penjual/' . $foto);
             })->toArray();
 
             $result[] = [
@@ -42,6 +42,18 @@ class DetailJasaMuaController extends Controller
                 'deskripsi' => $firstGaleri->deskripsi,
                 'created_at' => $firstGaleri->created_at,
                 'updated_at' => $firstGaleri->updated_at,
+            ];
+        }
+
+        // jika group galeri kosong, maka isi dengan url default
+        if (empty($result)) {
+            $result[] = [
+                'id' => 0,
+                'penyedia_jasa_mua_id' => 0,
+                'foto' => [url('default/banner.jpeg')],
+                'deskripsi' => '',
+                'created_at' => '',
+                'updated_at' => '',
             ];
         }
         
@@ -87,18 +99,20 @@ class DetailJasaMuaController extends Controller
         $kategori = JasaMuaKategori::join('kategori_layanan', 'kategori_layanan.id', '=', 'jasa_mua_kategori.kategori_layanan_id')
             ->where('jasa_mua_kategori.penyedia_jasa_mua_id', $id)
             ->select('kategori_layanan.nama')
+            ->distinct()
             ->get();
 
         // get portofolio
         $portofolio = Portofolio::where('penyedia_jasa_mua_id', $id)->select('file')->get();
         foreach ($portofolio as $key => $value) {
-            $portofolio[$key]->file = url('file/' . $mua->user_id . "_" . $mua->nama . '/portofolio/' . $value->file);
+            $portofolio[$key]->file = url('file/' . $mua->user_id . '/portofolio/' . $value->file);
         }
 
         // get layanan with harga with kategori
         $layanan = Layanan::join('jasa_mua_kategori', 'jasa_mua_kategori.id', '=', 'layanan.jasa_mua_kategori_id')
+            ->join('kategori_layanan', 'kategori_layanan.id', '=', 'jasa_mua_kategori.kategori_layanan_id')
             ->where('layanan.penyedia_jasa_mua_id', $id)
-            ->select('layanan.*', 'jasa_mua_kategori.kategori_layanan_id')
+            ->select('layanan.harga', 'layanan.durasi', 'kategori_layanan.nama', 'jasa_mua_kategori.kategori_layanan_id')
             ->get();
         foreach ($layanan as $key => $value) {
             $layanan[$key]->durasi = $layanan[$key]->durasi . ' menit';
@@ -129,8 +143,8 @@ class DetailJasaMuaController extends Controller
 
             // Organize photos into a new array based on the category name
             foreach ($review[$key]->foto_review as $key2 => $value2) {
-                $categoryName = strtolower(str_replace(' ', '_', $value->nama_kategori));
-                $photoUrl = url('file/' . $value->user_id_mua . "_" . $value->nama_mua . '/review/' . $value2->foto);
+                $categoryName = $value->nama_kategori;
+                $photoUrl = url('file/' . $value->user_id_mua . '/review/' . $value2->foto);
 
                 $review[$key]->foto_review[$key2] = $photoUrl;
 
@@ -144,10 +158,8 @@ class DetailJasaMuaController extends Controller
         // Convert the associative array to the desired structure
         $reviewPhotosByCategory = array_map(function ($category, $photos) {
             return [
-                [
                     'jenis_jasa' => $category,
                     'foto' => $photos,
-                ]
             ];
         }, array_keys($reviewPhotosByCategory), $reviewPhotosByCategory);
 
